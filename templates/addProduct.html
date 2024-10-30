@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>상품 등록</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{{ url_for('main') }}">쇼핑몰</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('addProduct') }}">상품 등록</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('board') }}">게시판</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('createImage') }}">이미지 생성</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('myPage') }}">마이페이지</a>
+                </li>
+                <li class="nav-item">
+                    {% if 'login_info' in session %}
+                        <a class="nav-link" href="{{ url_for('logout') }}">로그아웃</a>
+                    {% else %}
+                        <a class="nav-link" href="{{ url_for('login') }}">로그인</a>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center">상품 등록</h1>
+        <form method="POST" action="{{ url_for('addProduct') }}">
+            <div class="form-group">
+                <label for="productName">상품명</label>
+                <input type="text" class="form-control" id="productName" name="product_name" required>
+            </div>
+            <div class="form-group">
+                <label for="productDescription">상품 설명</label>
+                <textarea class="form-control" id="productDescription" name="product_description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="productImage">상품 이미지 URL</label>
+                <input type="text" class="form-control" id="productImage" name="product_image" required>
+            </div>
+            <button type="submit" class="btn btn-primary">상품 등록</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+    <!-- 부트스트랩 CSS 링크 -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3>마이페이지</h3>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">환영합니다, 사용자님!</h5>
+                        <p class="card-text">여기에서 귀하의 정보를 확인하고 크레딧을 충전할 수 있습니다.</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">이름: 사용자 이름</li>
+                            <li class="list-group-item">이메일: user@example.com</li>
+                            <li class="list-group-item">가입일: 2024-01-01</li>
+                            <li class="list-group-item">크레딧: 500000</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="#" class="btn btn-primary">크레딧 충전</a>
+                        <a href="/sales_history" class="btn btn-secondary">판매 내역</a>
+                        <a href="/purchase_history" class="btn btn-secondary">구매 내역</a>
+                        <a href="/logout" class="btn btn-danger">로그아웃</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 부트스트랩 JS 및 의존성 링크 -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
