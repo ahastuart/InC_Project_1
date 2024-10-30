@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>쇼핑몰</title>
+    <title>CSI Mall</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 필기체 폰트 추가 -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
         /* 상품 이미지 크기 설정 */
         .card-img-top {
@@ -12,11 +14,27 @@
             height: 100px;
             object-fit: cover; /* 이미지를 잘라서 맞춤 */
         }
+
+        /* 필기체 스타일 추가 */
+        .fancy-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5em;
+            text-align: center;
+            color: #333;
+        }
+
+         /* 로고 크기 조정 */
+         .navbar-brand img {
+            width: 50px; /* 원하는 크기로 조정 */
+            height: auto;
+        }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">쇼핑몰</a>
+        <a class="navbar-brand" href="{{ url_for('main') }}">
+            <img src="{{ url_for('static', filename='/image/logo.png') }}" alt="쇼핑몰 로고">
+        </a>        
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -54,8 +72,10 @@
                 </script>
             {% endif %}
         {% endwith %}
-        
-        <h1 class="text-center">환영합니다! 쇼핑을 즐기세요!</h1>
+
+        <!-- 필기체 스타일 적용 -->
+        <h1 class="fancy-title">Create and Sell your Imagination</h1>
+
         <div class="row mt-4">
             <div class="col-md-4">
                 <div class="card">
@@ -126,6 +146,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
 
 
 <!-- <div class="row mt-4">

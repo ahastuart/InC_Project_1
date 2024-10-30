@@ -5,10 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>상품 등록</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* 필기체 폰트 */
+        .fancy-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5em;
+            text-align: center;
+            color: #333;
+        }
+         /* 로고 크기 조정 */
+         .navbar-brand img {
+            width: 50px; /* 원하는 크기로 조정 */
+            height: auto;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{{ url_for('main') }}">쇼핑몰</a>
+        <a class="navbar-brand" href="{{ url_for('main') }}">
+            <img src="{{ url_for('static', filename='/image/logo.png') }}" alt="쇼핑몰 로고">
+        </a>   
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
@@ -35,7 +52,7 @@
     </nav>
 
     <div class="container mt-5">
-        <h1 class="text-center">상품 등록</h1>
+        <h1 class="fancy-title">Sell your imagination</h1>
         <form method="POST" action="{{ url_for('addProduct') }}">
             <div class="form-group">
                 <label for="productName">상품명</label>
