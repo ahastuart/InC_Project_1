@@ -3,10 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>회원가입</title>
+    <link rel="icon" href="/static/image/favicon.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa; /* Light background for contrast */
+        }
+        .fancy-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5em;
+            text-align: center;
+            color: #333;
         }
         .form-container {
             max-width: 800px; /* Increased max-width for more horizontal space */
@@ -66,18 +74,25 @@
         .modal-content {
             padding: 20px;
         }
+        /* 추가된 스타일 */
+        h3 {
+            font-family: 'Nanum Pen Script', cursive; /* 변경된 폰트 스타일 */
+            font-size: 2em; /* 크기 조정 */
+            text-align: center; /* 중앙 정렬 */
+            color: #333; /* 색상 지정 */
+        }
     </style>
 </head>
 <body>
 
 <div class="container form-container">
     <div class="header-container">
-        <h1>간편회원가입</h1>
+        <h1 class="fancy-title">SignUp</h1>
         <div class="header-line"></div>
     </div>
     
     <form action="register.jsp" method="post"> 
-        <h3 class="text-center">약관동의</h3>
+        <h3>약관동의</h3>
         <hr>
         <div class="form-group">
             <div class="form-check">
@@ -109,7 +124,7 @@
         </div>
         <hr>
 
-        <h3 class="text-center">회원정보</h3>
+        <h3>회원정보</h3>
         <p class="text-center">
             <img src="//sui.ssgcdn.com/ui/ssg/img/mem/ico_star.gif" alt="필수" class="required-icon"/>
             표시는 필수입력 항목 이오니 반드시 입력해 주세요
@@ -161,12 +176,12 @@
                 <input type="text" id="UserPhone2" name="UserPhone2" class="form-control" maxlength="4" required>
                 <input type="text" id="UserPhone3" name="UserPhone3" class="form-control" maxlength="4" required>
                 <div class="input-group-append">
-                    <button type="button" class="btn btn-secondary"onclick="sendVerificationCode()">인증번호 발송</button>
+                    <button type="button" class="btn btn-secondary" onclick="sendVerificationCode()">인증번호 발송</button>
                 </div>
             </div>
         </div>
 
-        <h3 class="text-center">마케팅 정보 수신 동의</h3>
+        <h3>마케팅 정보 수신 동의</h3>
         <hr>
 
         <div class="form-group">

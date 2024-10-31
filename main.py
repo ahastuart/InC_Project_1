@@ -1,8 +1,8 @@
 from flask import *
 
-# 기능 별 분리 생각할것
-# 알케미, 블루프린트 추가하기
-# 검색기능 추가, 카테고리별 보기 및 검색
+# 기능 별 분리 생각할것 -> 블루프린트
+# 알케미(ORM)
+# 검색기능 추가(X), 카테고리별 보기 및 검색 (카테고리 - 그림, 로고, 사진 ..)
 # streamlit
 
 app = Flask(__name__)
@@ -58,11 +58,21 @@ def myPage():
     else:
         return redirect(url_for('login'))  # 세션이 없다면 로그인으로
     
-# 구매 내역 페이지
+# 구매 내역 페이지(실제 상품 연동 필요)
+@app.route('/buyList')
+def buyList():
+    return render_template('buyList.html')
 
-# 판매 내역 페이지
+# 판매 내역 페이지(실제 상품 연동 필요)
+@app.route('/sellList')
+def sellList():
+    return render_template('sellList.html')
 
 # 크레딧 충전 페이지
+# 크레딧 충전 완료되면 home으로 리디렉션 되도록 수정필요
+@app.route('/addCredit')
+def addCredit():
+    return render_template('addCredit.html')
 
 # 상품 목록을 저장하기 위한 리스트
 products = []
@@ -92,17 +102,43 @@ def addProduct():
 # 게시판 페이지(ID, 게시글, 작성 시간, 댓글)
 @app.route('/board')
 def board():
-    pass
+    return render_template('board.html')
+
+# 게시글 추가 페이지, Insert 추가 처리 필요
+@app.route('/newPost')
+def newPost():
+    return render_template('newPost.html')
+
+# 게시글 조회 페이지 select 추가 처리 필요
+@app.route('/viewPost')
+def viewPost():
+    return render_template('viewPost.html')
 
 # 구매 페이지(이미지, 크레딧 차감 처리, 결제 완료 후에는 이미지 판매완료 처리, 구매자 PK 포함)
 @app.route('/buyProduct')
 def buyProduct():
-    pass
+    return render_template('buyProduct.html')
 
 # 생성 페이지
 @app.route('/createImage')
 def createImage():
+    return render_template('createImage.html')
+
+# 프롬프트를 통한 이미지 생성
+@app.route('/generateImageFromPrompt')
+def generateImageFromPrompt():
+    pass # 이미지 완성 후 저장 페이지로 이동
+
+# 카테고리를 이용한 이미지 생성
+@app.route('/generateImageFromCategory')
+def generateImageFromCategory():
+    pass # 이미지 완성 후 저장 페이지로 이동
+
+# 이미지 생성 후 저장 페이지
+@app.route('/route_name')
+def method_name():
     pass
+
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8000, debug=True)

@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>CSI Mall</title>
+    <link rel="icon" href="/static/image/favicon.png">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- 필기체 폰트 추가 -->
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
     <style>
         /* 상품 이미지 크기 설정 */
         .card-img-top {
@@ -23,8 +24,15 @@
             color: #333;
         }
 
-         /* 로고 크기 조정 */
-         .navbar-brand img {
+        /* 내비게이션 링크 스타일 */
+        .navbar-nav .nav-link {
+            font-family: 'Nanum Pen Script', cursive; /* Nanum Pen Script 폰트 적용 */
+            color: #333; /* 텍스트 색상 조정 */
+            font-size: 24px; /* 폰트 사이즈 변경 */
+        }
+
+        /* 로고 크기 조정 */
+        .navbar-brand img {
             width: 50px; /* 원하는 크기로 조정 */
             height: auto;
         }
@@ -77,7 +85,7 @@
         <h1 class="fancy-title">Create and Sell your Imagination</h1>
 
         <div class="row mt-4">
-            <div class="col-md-4">
+            <div class="col-md-4 mb-4">
                 <div class="card">
                     <img src="https://via.placeholder.com/100" class="card-img-top" alt="상품 이미지">
                     <div class="card-body">
@@ -87,7 +95,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 mb-4">
                 <div class="card">
                     <img src="https://via.placeholder.com/100" class="card-img-top" alt="상품 이미지">
                     <div class="card-body">
@@ -97,7 +105,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 mb-4">
                 <div class="card">
                     <img src="https://via.placeholder.com/100" class="card-img-top" alt="상품 이미지">
                     <div class="card-body">
@@ -108,7 +116,7 @@
                 </div>
             </div>
             <!-- 추가 상품 -->
-            <div class="col-md-4">
+            <div class="col-md-4 mb-4">
                 <div class="card">
                     <img src="https://via.placeholder.com/100" class="card-img-top" alt="상품 이미지">
                     <div class="card-body">
@@ -118,7 +126,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 mb-4">
                 <div class="card">
                     <img src="https://via.placeholder.com/100" class="card-img-top" alt="상품 이미지">
                     <div class="card-body">
@@ -128,7 +136,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 mb-4">
                 <div class="card">
                     <img src="https://via.placeholder.com/100" class="card-img-top" alt="상품 이미지">
                     <div class="card-body">
@@ -148,10 +156,9 @@
 </html>
 
 
-
 <!-- <div class="row mt-4">
     {% for product in products %}
-    <div class="col-md-4">
+    <div class="col-md-4 mb-4">
         <div class="card">
             <img src="{{ product.image }}" class="card-img-top" alt="상품 이미지">
             <div class="card-body">
