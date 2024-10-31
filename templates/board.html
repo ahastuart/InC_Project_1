@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>상품 등록</title>
+    <title>board</title>
     <link rel="icon" href="/static/image/favicon.png">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
@@ -32,22 +32,30 @@
             color: #007bff;
         }
 
-        /* 폼 스타일 */
-        .form-group label {
-            font-size: 1.1em;
-            color: #555;
+        /* 게시판 스타일 */
+        .board-container {
+            margin-top: 30px;
         }
-        .form-control {
-            border-radius: 0.25rem;
+        .board-item {
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
         }
-        .btn-primary {
+        .board-item h5 {
+            font-weight: bold;
+            color: #333;
+        }
+        .board-item p {
+            color: #666;
+        }
+        .btn-new-post {
             font-size: 1.1em;
             padding: 10px 20px;
-            border-radius: 0.25rem;
-            background-color: #007bff;
+            background-color: #333;
             border: none;
+            color: white;
+            border-radius: 0.25rem;
         }
-        .btn-primary:hover {
+        .btn-new-post:hover {
             background-color: #0056b3;
         }
     </style>
@@ -83,28 +91,25 @@
         </div>
     </nav>
 
-    <!-- 콘텐츠 영역 -->
-    <div class="container mt-5">
-        <h1 class="fancy-title">Sell Your Imagination</h1>
-        <form method="POST" action="{{ url_for('addProduct') }}">
-            <div class="form-group">
-                <label for="productName">상품명</label>
-                <input type="text" class="form-control" id="productName" name="product_name" placeholder="상품명을 입력하세요" required>
-            </div>
-            <div class="form-group">
-                <label for="productDescription">상품 설명</label>
-                <textarea class="form-control" id="productDescription" name="product_description" placeholder="상품 설명을 입력하세요" rows="4" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="productPrice">상품 가격</label>
-                <input type="number" class="form-control" id="productPrice" name="product_price" placeholder="상품 가격을 입력하세요" required>
-            </div>
-            <div class="form-group">
-                <label for="productImage">상품 이미지 URL</label>
-                <input type="url" class="form-control" id="productImage" name="product_image" placeholder="이미지 URL을 입력하세요" required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">상품 등록</button>
-        </form>
+    <!-- 게시판 콘텐츠 -->
+    <div class="container board-container">
+        <h1 class="fancy-title">Communicate with Others</h1>
+        
+        <!-- 새 글 작성 버튼 -->
+        <div class="text-right mb-3">
+            <a href="{{ url_for('newPost') }}" class="btn btn-new-post">새 글 작성</a>
+        </div>
+
+        <!-- 게시판 글 목록 -->
+        {% for post in posts %}
+        <div class="board-item">
+            <h5>{{ post.title }}</h5>
+            <p>{{ post.content | truncate(100) }}</p>
+            <a href="{{ url_for('viewPost', post_id=post.id) }}" class="btn btn-link">더보기</a>
+        </div>
+        {% else %}
+        <p>등록된 게시글이 없습니다.</p>
+        {% endfor %}
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

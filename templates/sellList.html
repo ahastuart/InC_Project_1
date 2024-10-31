@@ -3,61 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>상품 등록</title>
+    <title>판매 내역</title>
     <link rel="icon" href="/static/image/favicon.png">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
     
     <style>
-        /* 폰트 스타일 */
+        /* 필기체 폰트 */
         .fancy-title {
             font-family: 'Dancing Script', cursive;
-            font-size: 3em;
+            font-size: 2.5em;
             text-align: center;
             color: #333;
-            margin-bottom: 20px;
         }
-
-        /* 네비게이션 바 스타일 */
+        /* 로고 크기 조정 */
         .navbar-brand img {
-            width: 50px;
+            width: 50px; /* 원하는 크기로 조정 */
             height: auto;
         }
         .navbar-nav .nav-link {
             font-family: 'Nanum Pen Script', cursive;
-            font-size: 24px;
-            color: #555;
+            color: #333;
+            font-size: 32px;
         }
-        .navbar-nav .nav-link:hover {
-            color: #007bff;
-        }
-
-        /* 폼 스타일 */
-        .form-group label {
-            font-size: 1.1em;
-            color: #555;
-        }
-        .form-control {
-            border-radius: 0.25rem;
-        }
-        .btn-primary {
-            font-size: 1.1em;
-            padding: 10px 20px;
-            border-radius: 0.25rem;
-            background-color: #007bff;
-            border: none;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
+        /* 테이블 중앙 정렬 */
+        .purchase-history {
+            margin: 0 auto;
+            max-width: 800px;
         }
     </style>
 </head>
 <body>
-    <!-- 네비게이션 바 -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="{{ url_for('main') }}">
             <img src="{{ url_for('static', filename='/image/logo.png') }}" alt="쇼핑몰 로고">
-        </a>   
+        </a>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
@@ -83,28 +63,43 @@
         </div>
     </nav>
 
-    <!-- 콘텐츠 영역 -->
     <div class="container mt-5">
-        <h1 class="fancy-title">Sell Your Imagination</h1>
-        <form method="POST" action="{{ url_for('addProduct') }}">
-            <div class="form-group">
-                <label for="productName">상품명</label>
-                <input type="text" class="form-control" id="productName" name="product_name" placeholder="상품명을 입력하세요" required>
-            </div>
-            <div class="form-group">
-                <label for="productDescription">상품 설명</label>
-                <textarea class="form-control" id="productDescription" name="product_description" placeholder="상품 설명을 입력하세요" rows="4" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="productPrice">상품 가격</label>
-                <input type="number" class="form-control" id="productPrice" name="product_price" placeholder="상품 가격을 입력하세요" required>
-            </div>
-            <div class="form-group">
-                <label for="productImage">상품 이미지 URL</label>
-                <input type="url" class="form-control" id="productImage" name="product_image" placeholder="이미지 URL을 입력하세요" required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">상품 등록</button>
-        </form>
+        <h1 class="fancy-title">Your Sales History</h1>
+        
+        <!-- 구매 내역 테이블 -->
+        <div class="purchase-history">
+            <table class="table table-bordered mt-4">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">상품명</th>
+                        <th scope="col">구매 날짜</th>
+                        <th scope="col">가격</th>
+                        <th scope="col">상태</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>상품 1</td>
+                        <td>2024-10-15</td>
+                        <td>10,000 Credit</td>
+                        <td>판매 완료</td>
+                    </tr>
+                    <tr>
+                        <td>상품 2</td>
+                        <td>2024-10-20</td>
+                        <td>15,000 Credit</td>
+                        <td>판매 중</td>
+                    </tr>
+                    <tr>
+                        <td>상품 3</td>
+                        <td>2024-10-25</td>
+                        <td>8,000 Credit</td>
+                        <td>판매 완료</td>
+                    </tr>
+                    <!-- 판매 내역 데이터는 실제 데이터로 교체 -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

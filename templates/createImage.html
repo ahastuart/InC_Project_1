@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>상품 등록</title>
+    <title>Create Image</title>
     <link rel="icon" href="/static/image/favicon.png">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
@@ -17,7 +17,6 @@
             color: #333;
             margin-bottom: 20px;
         }
-
         /* 네비게이션 바 스타일 */
         .navbar-brand img {
             width: 50px;
@@ -32,28 +31,32 @@
             color: #007bff;
         }
 
-        /* 폼 스타일 */
-        .form-group label {
-            font-size: 1.1em;
-            color: #555;
-        }
-        .form-control {
-            border-radius: 0.25rem;
-        }
-        .btn-primary {
+        /* 버튼 스타일 */
+        .btn-submit {
             font-size: 1.1em;
             padding: 10px 20px;
-            border-radius: 0.25rem;
-            background-color: #007bff;
+            background-color: #333;
             border: none;
+            color: white;
+            border-radius: 0.25rem;
         }
-        .btn-primary:hover {
+        .btn-submit:hover {
             background-color: #0056b3;
+        }
+
+        .form-section {
+            margin-top: 30px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+
+        /* 하단 여백 추가 */
+        body {
+            padding-bottom: 40px;
         }
     </style>
 </head>
 <body>
-    <!-- 네비게이션 바 -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="{{ url_for('main') }}">
             <img src="{{ url_for('static', filename='/image/logo.png') }}" alt="쇼핑몰 로고">
@@ -83,28 +86,43 @@
         </div>
     </nav>
 
-    <!-- 콘텐츠 영역 -->
     <div class="container mt-5">
-        <h1 class="fancy-title">Sell Your Imagination</h1>
-        <form method="POST" action="{{ url_for('addProduct') }}">
-            <div class="form-group">
-                <label for="productName">상품명</label>
-                <input type="text" class="form-control" id="productName" name="product_name" placeholder="상품명을 입력하세요" required>
-            </div>
-            <div class="form-group">
-                <label for="productDescription">상품 설명</label>
-                <textarea class="form-control" id="productDescription" name="product_description" placeholder="상품 설명을 입력하세요" rows="4" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="productPrice">상품 가격</label>
-                <input type="number" class="form-control" id="productPrice" name="product_price" placeholder="상품 가격을 입력하세요" required>
-            </div>
-            <div class="form-group">
-                <label for="productImage">상품 이미지 URL</label>
-                <input type="url" class="form-control" id="productImage" name="product_image" placeholder="이미지 URL을 입력하세요" required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">상품 등록</button>
-        </form>
+        <h1 class="fancy-title">Create your Imagination</h1>
+        
+        <!-- 1. 프롬프트 입력을 통한 이미지 생성 -->
+        <div class="form-section">
+            <h3>Prompt</h3>
+            <form method="POST" action="{{ url_for('generateImageFromPrompt') }}">
+                <div class="form-group">
+                    <label for="promptInput">Enter the prompt</label>
+                    <input type="text" class="form-control" id="promptInput" name="prompt" placeholder="ex: A view of the sunrise from the mountain" required>
+                </div>
+                <button type="submit" class="btn btn-submit btn-block">Generate</button>
+            </form>
+        </div>
+
+        <!-- 2. 카테고리와 주제 선택을 통한 이미지 생성 -->
+        <div class="form-section">
+            <h3>Simple</h3>
+            <form method="POST" action="{{ url_for('generateImageFromCategory') }}">
+                <div class="form-group">
+                    <label for="categorySelect">Select a Categories</label>
+                    <select class="form-control" id="categorySelect" name="category" required>
+                        <option value="logo">logo</option>
+                        <option value="photo">picture</option>
+                        <option value="illustration">painting</option>
+                        <option value="illustration">drawing</option>
+                        <option value="illustration">sketch</option>
+                        <option value="illustration">illustration</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="topicInput">Enter the Topic</label>
+                    <input type="text" class="form-control" id="topicInput" name="topic" placeholder="ex: winter forest" required>
+                </div>
+                <button type="submit" class="btn btn-submit btn-block">Generate</button>
+            </form>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
