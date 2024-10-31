@@ -3,26 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마이페이지</title>
+    <title>myPage</title>
     <!-- 부트스트랩 CSS 링크 -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Dancing Script 및 Nanum Pen Script 폰트 링크 -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
     <style>
+        .fancy-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5em;
+            text-align: center;
+            color: #333;
+        }
         body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
             background-color: #f8f9fa;
+        }
+        .navbar-brand img {
+            width: 50px;
+            height: auto;
+        }
+        /* 내비게이션 링크 스타일 */
+        .navbar-nav .nav-link {
+            font-family: 'Nanum Pen Script', cursive; /* Nanum Pen Script 폰트 적용 */
+            color: #333; /* 텍스트 색상 조정 */
+            font-size: 32px; /* 폰트 사이즈 변경 */
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- 네비게이션 바 추가 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{{ url_for('main') }}">
+            <img src="{{ url_for('static', filename='/image/logo.png') }}" alt="쇼핑몰 로고">
+        </a>  
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('addProduct') }}">상품 등록</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('board') }}">게시판</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('createImage') }}">이미지 생성</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('myPage') }}">마이페이지</a>
+                </li>
+                <li class="nav-item">
+                    {% if 'login_info' in session %}
+                        <a class="nav-link" href="{{ url_for('logout') }}">로그아웃</a>
+                    {% else %}
+                        <a class="nav-link" href="{{ url_for('login') }}">로그인</a>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header text-center">
-                        <h3>마이페이지</h3>
+                        <h3 class="fancy-title">MyPage</h3>
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">환영합니다, 사용자님!</h5>
@@ -44,6 +91,7 @@
             </div>
         </div>
     </div>
+
     <!-- 부트스트랩 JS 및 의존성 링크 -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
