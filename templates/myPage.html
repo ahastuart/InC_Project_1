@@ -34,7 +34,7 @@
 <body>
     <!-- 네비게이션 바 추가 -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{{ url_for('main') }}">
+        <a class="navbar-brand" href="{{ url_for('main.main') }}">
             <img src="{{ url_for('static', filename='/image/logo.png') }}" alt="쇼핑몰 로고">
         </a>  
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,22 +43,22 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('addProduct') }}">상품 등록</a>
+                    <a class="nav-link" href="{{ url_for('product.addProduct') }}">상품 등록</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('board') }}">게시판</a>
+                    <a class="nav-link" href="{{ url_for('board.view') }}">게시판</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('createImage') }}">이미지 생성</a>
+                    <a class="nav-link" href="{{ url_for('product.createImage') }}">이미지 생성</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('myPage') }}">마이페이지</a>
+                    <a class="nav-link" href="{{ url_for('user.myPage') }}">마이페이지</a>
                 </li>
                 <li class="nav-item">
                     {% if 'login_info' in session %}
-                        <a class="nav-link" href="{{ url_for('logout') }}">로그아웃</a>
+                        <a class="nav-link" href="{{ url_for('user.logout') }}">로그아웃</a>
                     {% else %}
-                        <a class="nav-link" href="{{ url_for('login') }}">로그인</a>
+                        <a class="nav-link" href="{{ url_for('user.login') }}">로그인</a>
                     {% endif %}
                 </li>
             </ul>
@@ -83,10 +83,10 @@
                         </ul>
                     </div>
                     <div class="card-footer text-center">
-                        <a href="/addCredit" class="btn btn-primary">크레딧 충전</a>
-                        <a href="/sellList" class="btn btn-secondary">판매 내역</a>
-                        <a href="/buyList" class="btn btn-secondary">구매 내역</a>
-                        <a href="/logout" class="btn btn-danger">로그아웃</a>
+                        <a href="/user/addCredit" class="btn btn-primary">크레딧 충전</a>
+                        <a href="/user/sellList" class="btn btn-secondary">판매 내역</a>
+                        <a href="/user/buyList" class="btn btn-secondary">구매 내역</a>
+                        <a href="/user/logout" class="btn btn-danger">로그아웃</a>
                     </div>
                 </div>
             </div>
