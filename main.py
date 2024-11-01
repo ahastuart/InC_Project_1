@@ -134,7 +134,7 @@ def generateImageFromPrompt():
 def generateImageFromCategory():
     pass # 이미지 완성 후 저장 페이지로 이동
 
-# 이미지 생성 후 저장 페이지
+# 이미지 생성 후 저장 페이지 추가 필요
 @app.route('/route_name')
 def method_name():
     pass
