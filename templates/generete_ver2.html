@@ -99,7 +99,7 @@
         <!-- 1. 프롬프트 입력을 통한 이미지 생성 -->
         <div class="form-section">
             <h3>Prompt</h3>
-            <form method="POST" action="{{ url_for('generateImageFromPrompt') }}" onsubmit="showLoadingSpinner()">
+            <form method="POST" action="{{ url_for('product.generateImageFromPrompt') }}" onsubmit="showLoadingSpinner()">
                 <div class="form-group">
                     <label for="promptInput">Enter the prompt</label>
                     <input type="text" class="form-control" id="promptInput" name="prompt" placeholder="ex: A view of the sunrise from the mountain" required>
@@ -111,7 +111,7 @@
         <!-- 2. 카테고리와 주제 선택을 통한 이미지 생성 -->
         <div class="form-section">
             <h3>Simple</h3>
-            <form method="POST" action="{{ url_for('generateImageFromCategory') }}" onsubmit="showLoadingSpinner()">
+            <form method="POST" action="{{ url_for('product.generateImageFromCategory') }}" onsubmit="showLoadingSpinner()">
                 <div class="form-group">
                     <label for="categorySelect">Select a Categories</label>
                     <select class="form-control" id="categorySelect" name="category" required>
