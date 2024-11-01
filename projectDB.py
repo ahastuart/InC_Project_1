@@ -18,70 +18,28 @@ class db_connection:
             autocommit=True  # 테스트환경에서는 이렇게 사용
         )
 
-# 클래스 수정해서 사용
-class DeptDao:
+class UserDao:
     def __init__(self):
         pass
     
-    # SELECT
-    def get_depts(self):
-        ret = []
-        # cursor = connection을 이용해서 작업할 수 있는 기능을 생성
-        curs = db_connection.get_db().cursor()
-        
-        # 쿼리 작성
-        sql = 'select * from dept ;'
-        curs.execute(sql)
-        
-        rows = curs.fetchall()
-        # 결과를 딕셔너리 형태로 리스트에 저장
-        for e in rows:
-            temp = {'deptno':e[0], 'dname':e[1], 'loc':e[2]}
-            ret.append(temp)
-        
-        db_connection.get_db().close()
-        return ret
-    
-    # INSERT
-    def insert_dept(self, deptno, dname, loc):
-        curs = db_connection.get_db().cursor()
-        
-        sql = 'insert into dept (deptno, dname, loc) values(%s, %s, %s) ;'
-        insert_num = curs.execute(sql,(deptno, dname, loc))
-        
-        # commit() -> autoCommit = True이기 때문에 따로 하지 않음
-        
-        db_connection.get_db().close()
-       
-	      # return f'insert OK : {insert_num}'
-        return 'insert ok {0}'.format(insert_num)
-    
-    # UPDATE
-    def update_dept(self, deptno, dname, loc):
-        curs = db_connection.get_db().cursor()
-        
-        sql = 'update dept set dname=%s, loc=%s where deptno=%s ;'
-        update_cnt = curs.execute(sql,(dname, loc, deptno))
-        
-        db_connection.get_db().close()
-        return f'updete ok : {update_cnt}'
-    
-    # DELETE 
-    def delete_dept(self, deptno):
-        curs = db_connection.get_db().cursor()
-        
-        sql = 'delete from dept where deptno=%s ;'
-        delete_cnt = curs.execute(sql, deptno)
-        
-        db_connection.get_db().close()
-        
-        return f'delete ok : {delete_cnt}'
+    # 사용자 조회
+    def get_user(self, id, password):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = "SELECT * FROM users WHERE id = %s AND password = %s"
+        curs.execute(sql, (id, password))
+        user = curs.fetchone()
+        conn.close()
+        return user
 
+
+# 클래스 수정해서 사용
         
 if __name__ == '__main__':
-    print(DeptDao().insert_dept(12, 'test1', 'loc1'))
-    print(DeptDao().update_dept(12,'test111','loc111'))
-    print(DeptDao().delete_dept(12))
-    emplist = DeptDao().get_depts()
-    print(emplist)
+    # 새로운 UserDao 테스트 코드
+    user = UserDao().get_user('test_user@example.com', 'test_password') # 확인용
+    if user:
+        print(f"User found: {user}")
+    else:
+        print("User not found")
     

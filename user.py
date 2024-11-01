@@ -1,5 +1,6 @@
 
 from flask import * 
+from projectDB import *
 
 blueprint = Blueprint('user', __name__, url_prefix='/user' ,template_folder='templates')
 
@@ -9,8 +10,12 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if username == 'bin' and password == '1234':  # 아이디 비밀번호 조회 기능 추가
-            session['login_info'] = username  # 로그인 정보 세션에 저장
+
+        # 사용자 정보 조회
+        user = UserDao().get_user(username, password)
+
+        if user:  # 사용자가 존재할 경우
+            session['login_info'] = user[1]  # 로그인 정보 세션에 저장
             flash('로그인 성공!')  # 로그인 성공 메시지
             return redirect(url_for('main.main'))  # => 리디렉션 처리
         else:
