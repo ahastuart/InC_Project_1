@@ -1,4 +1,5 @@
 import pymysql
+import datetime
 
 class db_connection:
     def __init__(self):
@@ -9,79 +10,89 @@ class db_connection:
 		# 클래스메서드는 인스턴스 생성 없이 호출 가능: db_connection.get_db()
     @classmethod
     def get_db(self):
+        # return pymysql.connect(
+        #     host='localhost',
+        #     user='root',
+        #     password='rnrtmdqls98!',
+        #     db='project',
+        #     charset='utf8',
+        #     autocommit=True  # 테스트환경에서는 이렇게 사용
+        # )
         return pymysql.connect(
             host='localhost',
-            user='root',
-            password='rnrtmdqls98!',
-            db='project',
+            user='newuser',
+            password='qwer1234',
+            db='mini1',
             charset='utf8',
             autocommit=True  # 테스트환경에서는 이렇게 사용
         )
 
-# 클래스 수정해서 사용
-class DeptDao:
+class UserDao:
     def __init__(self):
         pass
     
-    # SELECT
-    def get_depts(self):
-        ret = []
-        # cursor = connection을 이용해서 작업할 수 있는 기능을 생성
-        curs = db_connection.get_db().cursor()
-        
-        # 쿼리 작성
-        sql = 'select * from dept ;'
-        curs.execute(sql)
-        
-        rows = curs.fetchall()
-        # 결과를 딕셔너리 형태로 리스트에 저장
-        for e in rows:
-            temp = {'deptno':e[0], 'dname':e[1], 'loc':e[2]}
-            ret.append(temp)
-        
-        db_connection.get_db().close()
-        return ret
+    # 사용자 조회
+    def get_user(self, id, password):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = "SELECT * FROM users WHERE id = %s AND password = %s"
+        curs.execute(sql, (id, password))
+        user = curs.fetchone()
+        conn.close()
+        return user
     
-    # INSERT
-    def insert_dept(self, deptno, dname, loc):
-        curs = db_connection.get_db().cursor()
-        
-        sql = 'insert into dept (deptno, dname, loc) values(%s, %s, %s) ;'
-        insert_num = curs.execute(sql,(deptno, dname, loc))
-        
-        # commit() -> autoCommit = True이기 때문에 따로 하지 않음
-        
-        db_connection.get_db().close()
-       
-	      # return f'insert OK : {insert_num}'
-        return 'insert ok {0}'.format(insert_num)
-    
-    # UPDATE
-    def update_dept(self, deptno, dname, loc):
-        curs = db_connection.get_db().cursor()
-        
-        sql = 'update dept set dname=%s, loc=%s where deptno=%s ;'
-        update_cnt = curs.execute(sql,(dname, loc, deptno))
-        
-        db_connection.get_db().close()
-        return f'updete ok : {update_cnt}'
-    
-    # DELETE 
-    def delete_dept(self, deptno):
-        curs = db_connection.get_db().cursor()
-        
-        sql = 'delete from dept where deptno=%s ;'
-        delete_cnt = curs.execute(sql, deptno)
-        
-        db_connection.get_db().close()
-        
-        return f'delete ok : {delete_cnt}'
+    # 사용자 정보 ID로 조회 (마이페이지에서 사용)
+    def get_user_by_id(self, user_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = "SELECT * FROM users WHERE user_id = %s"
+        curs.execute(sql, (user_id,))
+        user = curs.fetchone()
+        conn.close()
+        return user
 
+
+class PostDao:
+    def __init__(self):
+        pass
+    
+    # 모든 게시글 조회
+    def get_all_posts(self):
+        conn = db_connection.get_db()
+        curs = conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT * FROM posts ORDER BY created_at DESC"
+        curs.execute(sql)
+        posts = curs.fetchall()
+        conn.close()
+        return posts
+
+    # 게시글 ID로 조회
+    def get_post_by_id(self, post_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT * FROM posts WHERE post_id = %s"
+        curs.execute(sql, (post_id,))
+        post = curs.fetchone()
+        conn.close()
+        return post
+
+    # 게시글 삽입
+    def insert_post(self, user_id, title, content):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = "INSERT INTO posts (user_id, title, content, created_at) VALUES (%s, %s, %s, %s)"
+        curs.execute(sql, (user_id, title, content, datetime.datetime.now()))
+        conn.commit()
+        conn.close()
+
+
+# 클래스 수정해서 사용
         
 if __name__ == '__main__':
-    print(DeptDao().insert_dept(12, 'test1', 'loc1'))
-    print(DeptDao().update_dept(12,'test111','loc111'))
-    print(DeptDao().delete_dept(12))
-    emplist = DeptDao().get_depts()
-    print(emplist)
+    # 새로운 UserDao 테스트 코드
+    user = UserDao().get_user('test_user@example.com', 'test_password') # 확인용
+    if user:
+        print(f"User found: {user}")
+    else:
+        print("User not found")
     
