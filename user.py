@@ -16,6 +16,7 @@ def login():
 
         if user:  # 사용자가 존재할 경우
             session['login_info'] = user[1]  # 로그인 정보 세션에 저장
+            session['user_id'] = user[0]  # 사용자 고유 ID 저장
             flash('로그인 성공!')  # 로그인 성공 메시지
             return redirect(url_for('main.main'))  # => 리디렉션 처리
         else:
@@ -29,6 +30,7 @@ def login():
 def logout():
     if 'login_info' in session:
         session.pop('login_info', None)
+        session.pop('user_id', None)
         flash('로그아웃 되었습니다.')  # 로그아웃 메시지
     return redirect(url_for('main.main'))
 
@@ -45,7 +47,16 @@ def signup():
 def myPage():
     if 'login_info' in session:
         username = session['login_info']
-        return render_template('myPage.html', name=username)
+        user_id = session['user_id']
+        user = UserDao().get_user_by_id(user_id)
+        if user:
+            user_data = {
+                'name': user[1],
+                'email': user[2],
+                'signup_date': user[4],
+                'credit': user[5]
+            }
+        return render_template('myPage.html', user_data=user_data)
     else:
         return redirect(url_for('user.login'))  # 세션이 없다면 로그인으로
 

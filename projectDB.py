@@ -31,6 +31,16 @@ class UserDao:
         user = curs.fetchone()
         conn.close()
         return user
+    
+    # 사용자 정보 ID로 조회 (마이페이지에서 사용)
+    def get_user_by_id(self, user_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = "SELECT * FROM users WHERE user_id = %s"
+        curs.execute(sql, (user_id,))
+        user = curs.fetchone()
+        conn.close()
+        return user
 
 
 # 클래스 수정해서 사용
