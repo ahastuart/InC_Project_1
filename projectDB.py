@@ -1,4 +1,5 @@
 import pymysql
+import datetime
 
 class db_connection:
     def __init__(self):
@@ -9,11 +10,19 @@ class db_connection:
 		# 클래스메서드는 인스턴스 생성 없이 호출 가능: db_connection.get_db()
     @classmethod
     def get_db(self):
+        # return pymysql.connect(
+        #     host='localhost',
+        #     user='root',
+        #     password='rnrtmdqls98!',
+        #     db='project',
+        #     charset='utf8',
+        #     autocommit=True  # 테스트환경에서는 이렇게 사용
+        # )
         return pymysql.connect(
             host='localhost',
-            user='root',
-            password='rnrtmdqls98!',
-            db='project',
+            user='newuser',
+            password='qwer1234',
+            db='mini1',
             charset='utf8',
             autocommit=True  # 테스트환경에서는 이렇게 사용
         )
@@ -41,6 +50,40 @@ class UserDao:
         user = curs.fetchone()
         conn.close()
         return user
+
+
+class PostDao:
+    def __init__(self):
+        pass
+    
+    # 모든 게시글 조회
+    def get_all_posts(self):
+        conn = db_connection.get_db()
+        curs = conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT * FROM posts ORDER BY created_at DESC"
+        curs.execute(sql)
+        posts = curs.fetchall()
+        conn.close()
+        return posts
+
+    # 게시글 ID로 조회
+    def get_post_by_id(self, post_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT * FROM posts WHERE post_id = %s"
+        curs.execute(sql, (post_id,))
+        post = curs.fetchone()
+        conn.close()
+        return post
+
+    # 게시글 삽입
+    def insert_post(self, user_id, title, content):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = "INSERT INTO posts (user_id, title, content, created_at) VALUES (%s, %s, %s, %s)"
+        curs.execute(sql, (user_id, title, content, datetime.datetime.now()))
+        conn.commit()
+        conn.close()
 
 
 # 클래스 수정해서 사용
