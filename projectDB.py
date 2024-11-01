@@ -12,7 +12,7 @@ class db_connection:
         return pymysql.connect(
             host='localhost',
             user='root',
-            password='rnrtmdqls98!',
+            password='qwer1234',
             db='project',
             charset='utf8',
             autocommit=True  # 테스트환경에서는 이렇게 사용
@@ -77,6 +77,24 @@ class DeptDao:
         
         return f'delete ok : {delete_cnt}'
 
+class UserDao:
+    def __init__(self):
+        pass
+
+    def insert_user(self, user_name, id, password):
+        curs = db_connection.get_db().cursor()
+        sql = 'INSERT INTO users (user_name, id, password) VALUES (%s, %s, %s);'
+        insert_num = curs.execute(sql, (user_name, id, password))
+        db_connection.get_db().close()
+        return f'Insert OK: {insert_num}'
+
+    def get_user_by_id(self, id):
+        curs = db_connection.get_db().cursor()
+        sql = 'SELECT * FROM users WHERE id = %s;'
+        curs.execute(sql, (id,))
+        user = curs.fetchone()
+        db_connection.get_db().close()
+        return user
         
 if __name__ == '__main__':
     print(DeptDao().insert_dept(12, 'test1', 'loc1'))

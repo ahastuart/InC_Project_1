@@ -3,6 +3,7 @@ import board
 import user
 import product
 import main
+import signup
 
 # 기능 별 분리 생각할것 -> 블루프린트
 # 알케미(ORM)
@@ -17,6 +18,7 @@ app.register_blueprint(board.blueprint)
 app.register_blueprint(user.blueprint)
 app.register_blueprint(product.blueprint)
 app.register_blueprint(main.blueprint)
+app.register_blueprint(signup.blueprint)
 
 
 # 상품 목록을 저장하기 위한 리스트
