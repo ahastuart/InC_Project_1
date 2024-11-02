@@ -85,7 +85,61 @@ class PostDao:
         conn.commit()
         conn.close()
 
+# 상품 관련 DB
+class productDAO:
+    def __init__(self):
+        pass
+    
+    # 상품 추가
+    def add_product(self, product_name, description, image_path, price, user_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        add_sql = '''
+        INSERT INTO products (product_name, description, image_path, price, user_id)
+                VALUES (%s, %s, %s, %s, %s)
+        '''
+        curs.execute(add_sql, (product_name, description, image_path, price, user_id))
+        curs.close()
 
+    # user_id로 상품 조회
+    def get_products_by_user_id(self, user_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = 'SELECT * FROM products WHERE user_id = %s'
+        curs.execute(sql, (user_id,))
+        curs.close()
+    
+    # 상품 삭제
+    def delete_product(self, product_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = 'DELETE FROM products WHERE product_id = %s'
+        curs.execute(sql, (product_id,))
+        curs.close()
+    
+    # 상품 수정
+    def update_product(self, product_id, **kwargs):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        fields = ', '.join([f'{key} = %s' for key in kwargs.keys()])
+        sql = f'UPDATE products SET {fields} WHERE product_id = %s'
+        values = list(kwargs.values()) + [product_id]
+        curs.execute(sql, values)
+        curs.close()
+        
+    # 상품 생성 시 크레딧 500 감소하도록 처리
+    def generate_image(self,user_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        # 추가될 때 크레딧 감소시켜야 함
+        update_sql = '''
+        UPDATE users
+        SET credit = credit - 500
+        WHERE user_id = %s AND credit >= 500
+        '''
+        curs.execute(update_sql,(user_id,))
+        curs.close()
+    
 # 클래스 수정해서 사용
         
 if __name__ == '__main__':

@@ -49,6 +49,7 @@ def generateImageFromPrompt():
     # 프롬프트에 입력한 내용을 GPT를 통해 DALL-E 프롬프트로 만들고, 이를 DALL-E에게 주입시켜 이미지를 생성한 후 created 페이지로 리턴해야 함
     if request.method == 'POST':
         user_prompt = request.form.get('prompt')
+        user_id = session.get('user_id')
         
         if not user_prompt:
             flash('프롬프트를 입력해주세요')
@@ -59,11 +60,13 @@ def generateImageFromPrompt():
         image_data = create_dalle_image(dalle_propt)
         image = Image.open(BytesIO(base64.b64decode(image_data)))
         
-        filename = f'{username}_image_{product_id}.png' # 번호 어떻게 부여할지 고민
+        # 이미지는 로컬에 저장됨. 
+        filename = f'{user_id}_image_{user_prompt[:10]}.png'
         save_path = os.path.join('/static/generated_image', filename)
         image.save(save_path)
         
-        return redirect(url_for('product.generatedImage')) # 이미지 완성 후 저장 페이지로 이동
+        image_url = url_for('static', filename=f'generated_image/{filename}')
+        return redirect(url_for('product.generatedImage', image_url=image_url))
 
     if request.method == 'GET':
         return render_template('createIamge.html')
@@ -76,9 +79,15 @@ def generateImageFromCategory():
         
         category = request.form.get('category')
         topic = request.form.get('topic')
+        user_id = session.get('user_id')
         
         if not category or not topic:
             flash('프롬프트를 입력해주세요')
+            return redirect(url_for('product.createImage'))
+        
+        # 크레딧 감소 시도
+        if not productDAO().generate_image(user_id):
+            flash('크레딧이 부족하여 이미지를 생성할 수 없습니다.')
             return redirect(url_for('product.createImage'))
         
         prompt = generate_dalle_category(category, topic)
@@ -86,21 +95,19 @@ def generateImageFromCategory():
         image_data = create_dalle_image(prompt)
         image = Image.open(BytesIO(base64.b64decode(image_data)))
         
-        #filename = f'{username}_image_{product_id}.png' # 번호 어떻게 부여할지 고민
-        filename = '1.png'
-        # save_path = os.path.join('/static/generated_image', filename)
+        filename = f'{user_id}_image_{topic}.png' # 파일 이름 수정완료
         save_path = os.path.join(current_app.root_path, 'static', 'generated_image', filename)
         image.save(save_path)
         
-        
-        return redirect(url_for('product.generatedImage'))
+        image_url = url_for('static', filename=f'generated_image/{filename}')
+        return redirect(url_for('product.generatedImage', image_url=image_url))
     
     if request.method == 'GET':
         return render_template('createImage.html')
     
 
-# 생성하자마자 저장되도록 구현해서 저장 기능 필요 없음. DB에서 받아서 보여주는 기능만 수행하면 됨. 다시 만들기는 생성페이지로 리디렉션 되도록
-# 이미지 생성 후 저장 페이지 추가 필요  -> 이미지를 저장하는 기능을 수행할 수 있도록 해야함. 저장하기를 누르면 이미지 폴더에 자동으로 저장이 되도록
-@blueprint.route('/generatedImage')
+# 생성된 이미지 결과 화면. 이미지 생성 시 image에 저장되도록 했기 때문에 추가로 저장은 필요 없음
+@blueprint.route('/createdImage')
 def generatedImage():
-    return render_template('createdImage.html')
+    image_url = request.args.get('image_url')
+    return render_template('createdImage.html', image_url=image_url)
