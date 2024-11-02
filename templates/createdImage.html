@@ -82,41 +82,25 @@
     <div class="container mt-5">
         <h1 class="fancy-title">Generate Your Image</h1>
         <div class="image-container">
-            <img src="{{ url_for('static', filename='/image/generated_image.png') }}" alt="Generated Image" class="generated-image" id="generatedImage">
+            <!-- 동적으로 전달된 이미지 경로로 설정 -->
+            {% if image_url %}
+                <img src="{{ image_url }}" alt="Generated Image" class="generated-image" id="generatedImage">
+            {% else %}
+                <p>No image generated yet.</p>
+            {% endif %}
             <div class="spinner-border" id="loadingSpinner" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
             <div class="btn-group">
-                <button class="btn btn-success" onclick="saveImage()">저장하기</button>
                 <button class="btn btn-secondary" onclick="regenerateImage()">다시 생성하기</button>
             </div>
         </div>
     </div>
 
     <script>
-        function saveImage() {
-            alert("이미지가 저장되었습니다.");
-            // 서버에 저장 로직 추가 가능
-        }
-
         function regenerateImage() {
-            // 이미지와 스피너 표시/숨기기
-            const generatedImage = document.getElementById('generatedImage');
-            const loadingSpinner = document.getElementById('loadingSpinner');
-
-            // 이미지 숨기고 스피너 표시
-            generatedImage.style.display = 'none';
-            loadingSpinner.style.display = 'inline-block';
-
-            // 비동기 함수로 이미지 다시 생성
-            setTimeout(() => {
-                // 이미지 재생성 완료 후 스피너 숨기고 이미지 표시
-                loadingSpinner.style.display = 'none';
-                generatedImage.style.display = 'block';
-
-                // 새 이미지 URL로 업데이트 (예시용, 실제 구현시 서버 응답에 따라 URL 변경)
-                generatedImage.src = "{{ url_for('static', filename='/image/new_generated_image.png') }}";
-            }, 2000); // 예시: 2초 후에 새로운 이미지 표시
+            // 이미지 재생성 기능 구현
+            window.location.href = "{{ url_for('product.createImage') }}";
         }
     </script>
 
