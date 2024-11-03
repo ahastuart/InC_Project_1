@@ -57,10 +57,10 @@ def myPage():
         user = UserDao().get_user_by_id(user_id)
         if user:
             user_data = {
-                'name': user[1],
-                'email': user[2],
-                'signup_date': user[4],
-                'credit': user[5]
+                'name': user['user_name'],
+                'email': user['id'],
+                'signup_date': user['signup_date'],
+                'credit': user['credit']
             }
         return render_template('myPage.html', user_data=user_data)
     else:

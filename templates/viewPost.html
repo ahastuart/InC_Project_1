@@ -40,16 +40,51 @@
             margin-bottom: 20px;
         }
 
+        /* 게시글 스타일 */
+        .post-container {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .post-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .post-meta {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        .post-content {
+            font-size: 1.2em;
+            line-height: 1.6em;
+            color: #333;
+            background-color: #f4f4f4; 
+            padding: 20px;
+            border-radius: 8px;
+        }
+
         /* 버튼 스타일 */
-        .btn-back {
+        .btn-back, .btn-edit {
             font-size: 1.1em;
             padding: 10px 20px;
-            background-color: #333;
             border: none;
             color: white;
             border-radius: 0.25rem;
         }
+        .btn-back {
+            background-color: #333;
+        }
         .btn-back:hover {
+            background-color: #0056b3;
+        }
+        .btn-edit {
+            background-color: #007bff;
+        }
+        .btn-edit:hover {
             background-color: #0056b3;
         }
     </style>
@@ -84,16 +119,42 @@
         </div>
     </nav>
 
+    <!-- 플래시 메시지 표시 영역 -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+    
     <div class="container mt-5">
         <h1 class="fancy-title">게시글 보기</h1>
         
-        <div class="mb-4">
-            <h3>{{ post.title }}</h3>
-            <p class="text-muted">{{ post.date_created }}</p>
-            <p>{{ post.content }}</p>
+        <!-- 게시글 상세 내용 -->
+        <div class="post-container">
+            <div class="post-title">{{ post['title'] }}</div>
+            <div class="post-meta">
+                작성 날짜: {{ post['created_at'] }} 
+                {% if post['updated_at'] %}
+                    | 수정 날짜: {{ post['updated_at'] }}
+                {% endif %}
+                | 작성자: {{ user_name }}
+            </div>
+            <div class="post-content">{{ post['content'] }}</div>
         </div>
-        
-        <a href="{{ url_for('board.view') }}" class="btn btn-back">목록으로 돌아가기</a>
+
+        <!-- 수정 버튼: 작성자만 보임 -->
+        <div class="mt-4 text-right">
+            {% if session['user_id'] == post['user_id'] %}
+            <a href="{{ url_for('board.editPost', post_id=post['post_id']) }}" class="btn btn-edit">수정하기</a>
+            {% endif %}
+            <a href="{{ url_for('board.view') }}" class="btn btn-back">목록으로 돌아가기</a>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
