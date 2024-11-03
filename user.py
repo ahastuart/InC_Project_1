@@ -1,5 +1,6 @@
 
 from flask import * 
+from projectDB import *
 
 blueprint = Blueprint('user', __name__, url_prefix='/user' ,template_folder='templates')
 
@@ -9,8 +10,13 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if username == 'bin' and password == '1234':  # 아이디 비밀번호 조회 기능 추가
-            session['login_info'] = username  # 로그인 정보 세션에 저장
+
+        # 사용자 정보 조회
+        user = UserDao().get_user(username, password)
+
+        if user:  # 사용자가 존재할 경우
+            session['login_info'] = user[1]  # 로그인 정보 세션에 저장
+            session['user_id'] = user[0]  # 사용자 고유 ID 저장
             flash('로그인 성공!')  # 로그인 성공 메시지
             return redirect(url_for('main.main'))  # => 리디렉션 처리
         else:
@@ -24,23 +30,73 @@ def login():
 def logout():
     if 'login_info' in session:
         session.pop('login_info', None)
+        session.pop('user_id', None)
         flash('로그아웃 되었습니다.')  # 로그아웃 메시지
     return redirect(url_for('main.main'))
 
 # 회원가입
 @blueprint.route('/signup', methods=['GET', 'POST'])
 def signup():
-    if request.method == 'GET':
-        return render_template('signup.html')  # 이메일 중복 처리 등 추가적 처리 필요함. 회원가입 완료 뒤에는 로그인 화면으로 리디렉션 되야함
-    else:
-        return redirect(url_for('main'))
+    if request.method == 'POST':
+        user_name = request.form['UserName']
+        id = request.form['UserId']
+        password = request.form['UserPw']
+        confirm_password = request.form['UserPwConfirm']
+
+        if password != confirm_password:
+            flash('비밀번호가 일치하지 않습니다.')
+            return redirect(url_for('user.signup'))
+
+        user_dao = UserDao()
+        existing_user = user_dao.get_user_by_id(id)
+        if existing_user:
+            flash('이미 사용 중입니다. 다른 값을 넣어주세요.')
+            return redirect(url_for('user.signup'))
+
+        result = user_dao.insert_user(user_name, id, password)
+        
+        if 'Insert OK' in result:
+            flash('회원가입이 완료되었습니다.')
+            return redirect(url_for('user.login'))
+        else:
+            flash('FATAL ERROR !')
+            return redirect(url_for('user.main'))
+
+    return render_template('signup.html')
+
+# id 중복 확인
+@blueprint.route('/check_duplicate', methods=['POST'])
+def check_duplicate():
+    data = request.get_json()
+    id = data.get('UserId')
+    
+    user_dao = UserDao()
+    existing_user = user_dao.get_user_by_id(id)
+    is_duplicate = existing_user is not None
+    
+    return jsonify({'isDuplicate': is_duplicate})
+
+# 회원가입 세부 기능
+@blueprint.route('/register')
+def register():
+    pass
+
 
 # 마이페이지(이름, ID, 구매 내역, 판매 내역 크레딧 조회 가능하도록)
 @blueprint.route('/myPage')
 def myPage():
     if 'login_info' in session:
         username = session['login_info']
-        return render_template('myPage.html', name=username)
+        user_id = session['user_id']
+        user = UserDao().get_user_by_id(user_id)
+        if user:
+            user_data = {
+                'name': user[1],
+                'email': user[2],
+                'signup_date': user[4],
+                'credit': user[5]
+            }
+        return render_template('myPage.html', user_data=user_data)
     else:
         return redirect(url_for('user.login'))  # 세션이 없다면 로그인으로
 
