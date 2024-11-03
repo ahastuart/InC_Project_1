@@ -85,7 +85,7 @@ class PostDao:
         conn.commit()
         conn.close()
 
-# 상품 관련 DB
+# 상품 관련 DAO
 class productDAO:
     def __init__(self):
         pass
