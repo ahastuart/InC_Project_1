@@ -4,37 +4,54 @@ import os
 from PIL import Image
 from io import BytesIO
 import base64
+from projectDB import *
 
 blueprint = Blueprint('product', __name__, url_prefix='/product' ,template_folder='templates')
 
 # 상품 등록 페이지
-# 상품 등록 되지 않음. 수정 필요
 @blueprint.route('/addProduct', methods=['GET', 'POST'])
 def addProduct():
     if request.method == 'POST':
-        product_name = request.form['productName']
-        product_description = request.form['productDescription']
-        product_image = request.form['productImage']
+        product_name = request.form['product_name']
+        product_description = request.form['product_description']
+        product_price = request.form['product_price']
         
-        # 상품 정보를 딕셔너리로 만들어 리스트에 추가
-        products.append({
-            'name': product_name,
-            'description': product_description,
-            'image': product_image
-        })
-        # CDN, DB에는 경로만 사진은 로컬에
-        
-        flash('상품이 등록되었습니다!')  # 등록 성공 메시지
-        return redirect(url_for('main.main'))  # 메인 화면으로 리디렉션
+        # 이미지 파일 처리
+        product_image = request.files['product_image']
+        if product_image:
+            image_filename = product_image.filename
+            image_path = os.path.join('static/generated_image', image_filename)
+            product_image.save(image_path)  # 이미지 저장
 
+            # DB에 상품 추가
+            productDAO().add_product(product_name, product_description, image_path, product_price, session['user_id'])
+            flash('상품이 등록되었습니다.')
+            return redirect(url_for('product.addProduct'))  # 등록 후 페이지 리다이렉션
+        
     return render_template('addProduct.html')
+# 구매 페이지
+@blueprint.route('/buyProduct/<int:product_id>')
+def buyProduct(product_id):
+    product = product_dao.get_product_by_id(product_id)
+    if not product:
+        flash("상품을 찾을 수 없습니다.")
+        return redirect(url_for('main.main'))
+    return render_template('buyproduct.html', product=product)
 
-# 구매 페이지(이미지, 크레딧 차감 처리, 결제 완료 후에는 이미지 판매완료 처리, 구매자 PK 포함)
-@blueprint.route('/buyProduct')
-def buyProduct():
-    return render_template('buyProduct.html')
+# 구매 기능
+@blueprint.route('/buyProduct/<int:product_id>', methods=['POST'])
+def confirmPurchase(product_id):
+    user = get_current_user()  # 로그인한 사용자 정보 가져오기
 
+    if not user:
+        flash("로그인이 필요합니다.")
+        return redirect(url_for('user.login'))
 
+    # 구매 로직 처리
+    result = product_dao.purchase_product(product_id, user['user_id'])  # user_id를 전달하여 구매 처리
+    flash(result)  # 결과 메시지 플래시에 표시
+
+    return redirect(url_for('user.myPage'))
 
 # 생성 페이지
 @blueprint.route('/createImage')
@@ -53,6 +70,11 @@ def generateImageFromPrompt():
         
         if not user_prompt:
             flash('프롬프트를 입력해주세요')
+            return redirect(url_for('product.createImage'))
+        
+        # 크레딧 감소 시도
+        if not productDAO().generate_image(user_id):
+            flash('크레딧이 부족하여 이미지를 생성할 수 없습니다.')
             return redirect(url_for('product.createImage'))
 
         dalle_propt = generate_dalle_prompt(user_prompt)

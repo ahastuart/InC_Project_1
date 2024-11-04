@@ -10,22 +10,22 @@ class db_connection:
 		# 클래스메서드는 인스턴스 생성 없이 호출 가능: db_connection.get_db()
     @classmethod
     def get_db(self):
-        # return pymysql.connect(
-        #     host='localhost',
-        #     user='root',
-        #     password='rnrtmdqls98!',
-        #     db='project',
-        #     charset='utf8',
-        #     autocommit=True  # 테스트환경에서는 이렇게 사용
-        # )
         return pymysql.connect(
             host='localhost',
-            user='newuser',
-            password='qwer1234',
+            user='root',
+            password='rnrtmdqls98!',
             db='mini1',
             charset='utf8',
             autocommit=True  # 테스트환경에서는 이렇게 사용
         )
+        # return pymysql.connect(
+        #     host='localhost',
+        #     user='newuser',
+        #     password='qwer1234',
+        #     db='mini1',
+        #     charset='utf8',
+        #     autocommit=True  # 테스트환경에서는 이렇게 사용
+        # )
 
 class UserDao:
     def __init__(self):
@@ -50,16 +50,6 @@ class UserDao:
         user = curs.fetchone()
         conn.close()
         return user
-    
-    
-    
-    # 사용자 추가
-    def insert_user(self, user_name, id, password):
-        curs = db_connection.get_db().cursor()
-        sql = 'INSERT INTO users (user_name, id, password) VALUES (%s, %s, %s);'
-        insert_num = curs.execute(sql, (user_name, id, password))
-        db_connection.get_db().close()
-        return f'Insert OK: {insert_num}'
 
 
 class PostDao:
@@ -97,19 +87,57 @@ class PostDao:
         conn.commit()
         conn.close()
 
-    # 게시글 수정
-    def update_post(self, post_id, new_title, new_content):
-        conn = db_connection.get_db()
-        curs = conn.cursor()
-        sql = "UPDATE posts SET title = %s, content = %s, updated_at = NOW() WHERE post_id = %s"
-        curs.execute(sql, (new_title, new_content, post_id))
-        conn.commit()
-        conn.close()
-
 # 상품 관련 DB
 class productDAO:
     def __init__(self):
         pass
+    
+    # Productid 조회
+    def get_product_by_id(self, product_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor(dictionary=True)  # 딕셔너리 형태로 결과를 반환
+        sql = 'SELECT * FROM products WHERE product_id = %s'
+        curs.execute(sql, (product_id,))
+        product = curs.fetchone()  # 단일 상품이므로 fetchone 사용
+        curs.close()
+        return product
+    
+    # product_id  - 구매페이지
+    def purchase_product(self, product_id, user_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+
+        # 1. 해당 상품의 가격을 확인하고 유저의 크레딧 확인
+        product_sql = 'SELECT price FROM products WHERE product_id = %s'
+        curs.execute(product_sql, (product_id,))
+        product = curs.fetchone()
+        
+        if not product:
+            curs.close()
+            return "상품을 찾을 수 없습니다."
+
+        price = product[0]
+        
+        # 2. 유저의 크레딧 확인
+        user_sql = 'SELECT credit FROM users WHERE user_id = %s'
+        curs.execute(user_sql, (user_id,))
+        user = curs.fetchone()
+
+        if not user or user[0] < price:
+            curs.close()
+            return "크레딧이 부족합니다."
+
+        # 3. 유저의 크레딧 차감 및 상품 상태를 'sold'로 업데이트
+        update_user_sql = 'UPDATE users SET credit = credit - %s WHERE user_id = %s'
+        update_product_sql = 'UPDATE products SET status = %s WHERE product_id = %s'
+
+        curs.execute(update_user_sql, (price, user_id))
+        curs.execute(update_product_sql, ('sold', product_id))
+
+        conn.commit()  # 데이터베이스에 변경 사항 반영
+        curs.close()
+        
+        return "구매가 완료되었습니다."
     
     # 상품 추가
     def add_product(self, product_name, description, image_path, price, user_id):
