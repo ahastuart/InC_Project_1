@@ -88,11 +88,14 @@
             {% for product in products %}
             <div class="col-md-4 mb-4">
                 <div class="card">
-                    <img src="{{ product.image }}" class="card-img-top" alt="상품 이미지">
+                    <!-- 상품 이미지 경로 -->
+                    <img src="{{ url_for('static', filename=product.image_path) }}" class="card-img-top" alt="상품 이미지" style="width:100px; height:100px;">
+
                     <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">{{ product.description }}</p>
-                        <a href="{{ url_for('product.buyProduct', product_id=product.id) }}" class="btn btn-primary">구매하기</a>
+                        <h5 class="card-title">{{ product.product_name }}</h5> <!-- 상품명 -->
+                        <p class="card-text">{{ product.description }}</p> <!-- 상품 설명 -->
+                        <p class="card-text"><small class="text-muted">상태: {{ product.status }}</small></p> <!-- 판매 상태 -->
+                        <a href="{{ url_for('product.buyProduct', product_id=product.product_id) }}" class="btn btn-primary">장바구니에 추가</a>
                     </div>
                 </div>
             </div>

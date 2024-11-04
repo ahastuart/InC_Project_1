@@ -22,7 +22,7 @@ class db_connection:
         #     host='localhost',
         #     user='newuser',
         #     password='qwer1234',
-        #     db='mini1',
+        #     db='mini3',
         #     charset='utf8',
         #     autocommit=True  # 테스트환경에서는 이렇게 사용
         # )
@@ -155,7 +155,19 @@ class productDAO:
                 VALUES (%s, %s, %s, %s, %s)
         '''
         curs.execute(add_sql, (product_name, description, image_path, price, user_id))
+        conn.commit()  
         curs.close()
+        conn.close()
+
+    # 상품 목록 가져오기 -- 메인페이지
+    def get_all_products(self):
+        conn = db_connection.get_db()
+        curs = conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT product_id, product_name, description, image_path, status FROM products"
+        curs.execute(sql)
+        products = curs.fetchall()
+        conn.close()
+        return products
 
     # user_id로 상품 조회
     def get_products_by_user_id(self, user_id):

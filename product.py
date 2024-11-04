@@ -5,6 +5,7 @@ from PIL import Image
 from io import BytesIO
 import base64
 from projectDB import *
+from werkzeug.utils import secure_filename
 
 blueprint = Blueprint('product', __name__, url_prefix='/product' ,template_folder='templates')
 
@@ -23,11 +24,17 @@ def addProduct():
             image_path = os.path.join('static/generated_image', image_filename)
             product_image.save(image_path)  # 이미지 저장
 
-            # DB에 상품 추가
-            productDAO().add_product(product_name, product_description, image_path, product_price, session['user_id'])
-            flash('상품이 등록되었습니다.')
-            return redirect(url_for('product.addProduct'))  # 등록 후 페이지 리다이렉션
+            # DB에 저장할 경로를 슬래시로 변환
+            db_image_path = f'generated_image/{image_filename}'  # 슬래시로 저장
+        else:
+            db_image_path = 'generated_image/default.jpg'
+
+        # DB에 상품 추가
+        productDAO().add_product(product_name, product_description, db_image_path, product_price, session['user_id'])
         
+        flash('상품이 등록되었습니다.')
+        return redirect(url_for('main.main'))
+    
     return render_template('addProduct.html')
 # 구매 페이지
 @blueprint.route('/buyProduct/<int:product_id>')
