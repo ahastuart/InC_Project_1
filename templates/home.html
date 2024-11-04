@@ -13,7 +13,7 @@
         .card-img-top {
             width: 100px;
             height: 100px;
-            object-fit: cover; /* 이미지를 잘라서 맞춤 */
+            object-fit: cover;
         }
 
         /* 필기체 스타일 추가 */
@@ -26,14 +26,14 @@
 
         /* 내비게이션 링크 스타일 */
         .navbar-nav .nav-link {
-            font-family: 'Nanum Pen Script', cursive; /* Nanum Pen Script 폰트 적용 */
-            color: #333; /* 텍스트 색상 조정 */
-            font-size: 24px; /* 폰트 사이즈 변경 */
+            font-family: 'Nanum Pen Script', cursive;
+            color: #333;
+            font-size: 24px;
         }
 
         /* 로고 크기 조정 */
         .navbar-brand img {
-            width: 50px; /* 원하는 크기로 조정 */
+            width: 50px;
             height: auto;
         }
     </style>
@@ -52,10 +52,10 @@
                     <a class="nav-link" href="{{ url_for('product.addProduct') }}">상품 등록</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('board.view') }}">게시판</a> <!-- 게시판 링크 추가 -->
+                    <a class="nav-link" href="{{ url_for('board.view') }}">게시판</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('product.createImage') }}">이미지 생성</a> <!-- 이미지 생성 링크 추가 -->
+                    <a class="nav-link" href="{{ url_for('product.createImage') }}">이미지 생성</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('user.myPage') }}">마이페이지</a>
@@ -76,7 +76,7 @@
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <script>
-                    alert("{{ messages[0] }}");  // 첫 번째 메시지를 alert로 표시
+                    alert("{{ messages[0] }}");
                 </script>
             {% endif %}
         {% endwith %}
@@ -85,67 +85,18 @@
         <h1 class="fancy-title">Create and Sell your Imagination</h1>
 
         <div class="row mt-4">
+            {% for product in products %}
             <div class="col-md-4 mb-4">
                 <div class="card">
-                    <img src="https://via.placeholder.com/100" class="card-img-top" alt="상품 이미지">
+                    <img src="{{ product.image }}" class="card-img-top" alt="상품 이미지">
                     <div class="card-body">
-                        <h5 class="card-title">상품명 1</h5>
-                        <p class="card-text">상품 설명 1</p>
-                        <a href="#" class="btn btn-primary">장바구니에 추가</a>
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description }}</p>
+                        <a href="{{ url_for('product.buyProduct', product_id=product.id) }}" class="btn btn-primary">구매하기</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <img src="https://via.placeholder.com/100" class="card-img-top" alt="상품 이미지">
-                    <div class="card-body">
-                        <h5 class="card-title">상품명 2</h5>
-                        <p class="card-text">상품 설명 2</p>
-                        <a href="#" class="btn btn-primary">장바구니에 추가</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <img src="https://via.placeholder.com/100" class="card-img-top" alt="상품 이미지">
-                    <div class="card-body">
-                        <h5 class="card-title">상품명 3</h5>
-                        <p class="card-text">상품 설명 3</p>
-                        <a href="#" class="btn btn-primary">장바구니에 추가</a>
-                    </div>
-                </div>
-            </div>
-            <!-- 추가 상품 -->
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <img src="https://via.placeholder.com/100" class="card-img-top" alt="상품 이미지">
-                    <div class="card-body">
-                        <h5 class="card-title">상품명 4</h5>
-                        <p class="card-text">상품 설명 4</p>
-                        <a href="#" class="btn btn-primary">장바구니에 추가</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <img src="https://via.placeholder.com/100" class="card-img-top" alt="상품 이미지">
-                    <div class="card-body">
-                        <h5 class="card-title">상품명 5</h5>
-                        <p class="card-text">상품 설명 5</p>
-                        <a href="#" class="btn btn-primary">장바구니에 추가</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <img src="https://via.placeholder.com/100" class="card-img-top" alt="상품 이미지">
-                    <div class="card-body">
-                        <h5 class="card-title">상품명 6</h5>
-                        <p class="card-text">상품 설명 6</p>
-                        <a href="#" class="btn btn-primary">장바구니에 추가</a>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 
@@ -154,20 +105,3 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-
-
-<!-- <div class="row mt-4">
-    {% for product in products %}
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            <img src="{{ product.image }}" class="card-img-top" alt="상품 이미지">
-            <div class="card-body">
-                <h5 class="card-title">{{ product.name }}</h5>
-                <p class="card-text">{{ product.description }}</p>
-                <a href="#" class="btn btn-primary">장바구니에 추가</a>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</div>
- -->

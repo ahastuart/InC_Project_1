@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>상품 등록</title>
+    <title>상품 구매</title>
     <link rel="icon" href="/static/image/favicon.png">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
@@ -32,28 +32,21 @@
             color: #007bff;
         }
 
-        /* 폼 스타일 */
-        .form-group label {
-            font-size: 1.1em;
-            color: #555;
-        }
-        .form-control {
-            border-radius: 0.25rem;
-        }
-        .btn-primary {
+        /* 버튼 스타일 */
+        .btn-submit {
             font-size: 1.1em;
             padding: 10px 20px;
-            border-radius: 0.25rem;
-            background-color: #007bff;
+            background-color: #333;
             border: none;
+            color: white;
+            border-radius: 0.25rem;
         }
-        .btn-primary:hover {
+        .btn-submit:hover {
             background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <!-- 네비게이션 바 -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="{{ url_for('main.main') }}">
             <img src="{{ url_for('static', filename='/image/logo.png') }}" alt="쇼핑몰 로고">
@@ -83,28 +76,21 @@
         </div>
     </nav>
 
-    <!-- 콘텐츠 영역 -->
     <div class="container mt-5">
-        <h1 class="fancy-title">Sell Your Imagination</h1>
-        <form method="POST" action="{{ url_for('product.addProduct') }}" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="productName">상품명</label>
-                <input type="text" class="form-control" id="productName" name="product_name" placeholder="상품명을 입력하세요" required>
+        <h1 class="fancy-title">Buy Image</h1>
+        
+        <div class="card mb-4">
+            <img src="{{ product.image_path }}" class="card-img-top" alt="상품 이미지" style="width: 100%; height: 300px; object-fit: cover;">
+            <div class="card-body">
+                <h5 class="card-title">{{ product.product_name }}</h5>
+                <p class="card-text">{{ product.description }}</p>
+                <p class="card-text"><strong>가격:</strong> {{ product.price }} 크레딧</p>
+                
+                <form method="POST" action="{{ url_for('product.confirmPurchase', product_id=product.product_id) }}">
+                    <button type="submit" class="btn btn-submit btn-block">구매하기</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="productDescription">상품 설명</label>
-                <textarea class="form-control" id="productDescription" name="product_description" placeholder="상품 설명을 입력하세요" rows="4" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="productPrice">상품 가격</label>
-                <input type="number" class="form-control" id="productPrice" name="product_price" placeholder="상품 가격을 입력하세요" required>
-            </div>
-            <div class="form-group">
-                <label for="productImage">상품 이미지</label>
-                <input type="file" class="form-control" id="productImage" name="product_image" accept="image/*" required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">상품 등록</button>
-        </form>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
