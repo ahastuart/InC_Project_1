@@ -73,9 +73,9 @@ def generateImageFromPrompt():
             return redirect(url_for('product.createImage'))
         
         # 크레딧 감소 시도
-        if not productDAO().generate_image(user_id):
-            flash('크레딧이 부족하여 이미지를 생성할 수 없습니다.')
-            return redirect(url_for('product.createImage'))
+        # if not productDAO().generate_image(user_id):
+        #     flash('크레딧이 부족하여 이미지를 생성할 수 없습니다.')
+        #     return redirect(url_for('product.createImage'))
 
         dalle_propt = generate_dalle_prompt(user_prompt)
         
@@ -107,10 +107,10 @@ def generateImageFromCategory():
             flash('프롬프트를 입력해주세요')
             return redirect(url_for('product.createImage'))
         
-        # 크레딧 감소 시도
-        if not productDAO().generate_image(user_id):
-            flash('크레딧이 부족하여 이미지를 생성할 수 없습니다.')
-            return redirect(url_for('product.createImage'))
+        # # 크레딧 감소 시도
+        # if not productDAO().generate_image(user_id):
+        #     flash('크레딧이 부족하여 이미지를 생성할 수 없습니다.')
+        #     return redirect(url_for('product.createImage'))
         
         prompt = generate_dalle_category(category, topic)
         
