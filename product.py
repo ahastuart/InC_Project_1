@@ -5,6 +5,7 @@ from PIL import Image
 from io import BytesIO
 import base64
 from projectDB import *
+from werkzeug.utils import secure_filename
 
 blueprint = Blueprint('product', __name__, url_prefix='/product' ,template_folder='templates')
 

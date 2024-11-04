@@ -91,6 +91,19 @@
         </div>
     </nav>
 
+    <!-- flash 메시지 표시 -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
     <!-- 게시판 콘텐츠 -->
     <div class="container board-container">
         <h1 class="fancy-title">Communicate with Others</h1>

@@ -11,22 +11,22 @@ class db_connection:
 		# 클래스메서드는 인스턴스 생성 없이 호출 가능: db_connection.get_db()
     @classmethod
     def get_db(self):
-        return pymysql.connect(
-            host='localhost',
-            user='root',
-            password='rnrtmdqls98!',
-            db='mini1',
-            charset='utf8',
-            autocommit=True  # 테스트환경에서는 이렇게 사용
-        )
         # return pymysql.connect(
         #     host='localhost',
-        #     user='newuser',
-        #     password='qwer1234',
+        #     user='root',
+        #     password='rnrtmdqls98!',
         #     db='mini1',
         #     charset='utf8',
         #     autocommit=True  # 테스트환경에서는 이렇게 사용
         # )
+        return pymysql.connect(
+            host='localhost',
+            user='newuser',
+            password='qwer1234',
+            db='mini3',
+            charset='utf8',
+            autocommit=True  # 테스트환경에서는 이렇게 사용
+        )
 
 class UserDao:
     def __init__(self):
@@ -105,6 +105,15 @@ class PostDao:
         curs = conn.cursor()
         sql = "INSERT INTO posts (user_id, title, content, created_at) VALUES (%s, %s, %s, %s)"
         curs.execute(sql, (user_id, title, content, datetime.datetime.now()))
+        conn.commit()
+        conn.close()
+
+    # 게시글 수정
+    def update_post(self, post_id, new_title, new_content):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = "UPDATE posts SET title = %s, content = %s, updated_at = NOW() WHERE post_id = %s"
+        curs.execute(sql, (new_title, new_content, post_id))
         conn.commit()
         conn.close()
 
@@ -208,7 +217,19 @@ class productDAO:
                 VALUES (%s, %s, %s, %s, %s)
         '''
         curs.execute(add_sql, (product_name, description, image_path, price, user_id))
+        conn.commit()  
         curs.close()
+        conn.close()
+
+    # 상품 목록 가져오기 -- 메인페이지
+    def get_all_products(self):
+        conn = db_connection.get_db()
+        curs = conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT product_id, product_name, description, image_path, status FROM products"
+        curs.execute(sql)
+        products = curs.fetchall()
+        conn.close()
+        return products
 
     # user_id로 상품 조회
     def get_products_by_user_id(self, user_id):
