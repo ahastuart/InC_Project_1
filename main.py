@@ -1,4 +1,5 @@
 from flask import *
+from projectDB import *
 
 blueprint = Blueprint('main', __name__, template_folder='templates')
 
@@ -10,4 +11,5 @@ def index():
 # 메인 화면
 @blueprint.route('/main')
 def main():
-    return render_template('home.html')
+    products = productDAO().get_all_products()
+    return render_template('home.html', products = products)

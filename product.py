@@ -25,31 +25,39 @@ def addProduct():
 
             # DB에 상품 추가
             productDAO().add_product(product_name, product_description, image_path, product_price, session['user_id'])
-            flash('상품이 등록되었습니다.')
-            return redirect(url_for('product.addProduct'))  # 등록 후 페이지 리다이렉션
+            # flash('상품이 등록되었습니다.')
+            return redirect(url_for('main.main'))  # 등록 후 페이지 리다이렉션
         
     return render_template('addProduct.html')
 # 구매 페이지
 @blueprint.route('/buyProduct/<int:product_id>')
 def buyProduct(product_id):
-    product = product_dao.get_product_by_id(product_id)
+    product = productDAO().get_product_by_id(product_id)
     if not product:
         flash("상품을 찾을 수 없습니다.")
         return redirect(url_for('main.main'))
-    return render_template('buyproduct.html', product=product)
+    return render_template('buyProduct.html', product=product)
 
 # 구매 기능
 @blueprint.route('/buyProduct/<int:product_id>', methods=['POST'])
 def confirmPurchase(product_id):
-    user = get_current_user()  # 로그인한 사용자 정보 가져오기
+    user = UserDao().get_current_user()  # 로그인한 사용자 정보 가져오기
 
     if not user:
         flash("로그인이 필요합니다.")
         return redirect(url_for('user.login'))
 
     # 구매 로직 처리
-    result = product_dao.purchase_product(product_id, user['user_id'])  # user_id를 전달하여 구매 처리
-    flash(result)  # 결과 메시지 플래시에 표시
+    result = productDAO().purchase_product(product_id, user['user_id'])  # user_id를 전달하여 구매 처리
+    # flash(result)  # 결과 메시지 플래시에 표시
+    
+    # 구매 성공 시 주문 정보를 기록
+    if "구매가 완료되었습니다." in result:  # 구매가 성공했을 경우
+        # 상품 정보를 가져와서 주문 생성
+        product = productDAO().get_product_by_id(product_id)  # 상품 정보 가져오기
+        if product:
+            order_dao = orderDAO()  # orderDAO 인스턴스 생성
+            order_dao.createOrder(product_id=product_id, user_id=user['user_id'], order_price=product['price'])  # 주문 기록
 
     return redirect(url_for('user.myPage'))
 
@@ -73,9 +81,9 @@ def generateImageFromPrompt():
             return redirect(url_for('product.createImage'))
         
         # 크레딧 감소 시도
-        # if not productDAO().generate_image(user_id):
-        #     flash('크레딧이 부족하여 이미지를 생성할 수 없습니다.')
-        #     return redirect(url_for('product.createImage'))
+        if not productDAO().generate_image(user_id):
+            flash('크레딧이 부족하여 이미지를 생성할 수 없습니다.')
+            return redirect(url_for('product.createImage'))
 
         dalle_propt = generate_dalle_prompt(user_prompt)
         
@@ -87,7 +95,7 @@ def generateImageFromPrompt():
         save_path = os.path.join('/static/generated_image', filename)
         image.save(save_path)
         
-        image_url = url_for('static', filename=f'generated_image/{filename}')
+        image_url = url_for('/static', filename=f'generated_image/{filename}')
         return redirect(url_for('product.generatedImage', image_url=image_url))
 
     if request.method == 'GET':
