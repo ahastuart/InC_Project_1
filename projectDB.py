@@ -81,9 +81,13 @@ class PostDao:
     # 모든 게시글 조회
     def get_all_posts(self):
         conn = db_connection.get_db()
-        
         curs = conn.cursor(pymysql.cursors.DictCursor)  # DictCursor 사용
-        sql = "SELECT * FROM posts ORDER BY created_at DESC"
+        sql = """
+            SELECT p.post_id, p.user_id, p.title, p.created_at, p.updated_at,
+                   (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.post_id) AS comment_count
+            FROM posts p
+            ORDER BY p.created_at DESC
+        """
         curs.execute(sql)
         posts = curs.fetchall()
         conn.close()
@@ -114,6 +118,37 @@ class PostDao:
         curs = conn.cursor()
         sql = "UPDATE posts SET title = %s, content = %s, updated_at = NOW() WHERE post_id = %s"
         curs.execute(sql, (new_title, new_content, post_id))
+        conn.commit()
+        conn.close()
+
+    # 댓글 조회
+    def get_comments_by_post_id(self, post_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor(pymysql.cursors.DictCursor)
+        sql = """SELECT c.comment_id, c.content, c.created_at, c.user_id, u.user_name 
+                 FROM comments c 
+                 JOIN users u ON c.user_id = u.user_id 
+                 WHERE c.post_id = %s ORDER BY c.created_at ASC"""
+        curs.execute(sql, (post_id,))
+        comments = curs.fetchall()
+        conn.close()
+        return comments
+
+    # 댓글 추가
+    def insert_comment(self, post_id, user_id, content):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = "INSERT INTO comments (post_id, user_id, content, created_at) VALUES (%s, %s, %s, %s)"
+        curs.execute(sql, (post_id, user_id, content, datetime.datetime.now()))
+        conn.commit()
+        conn.close()
+
+    # 댓글 삭제
+    def delete_comment(self, comment_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = "DELETE FROM comments WHERE comment_id = %s"
+        curs.execute(sql, (comment_id,))
         conn.commit()
         conn.close()
 

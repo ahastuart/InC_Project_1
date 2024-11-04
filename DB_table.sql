@@ -15,7 +15,7 @@ CREATE TABLE products (
     product_name VARCHAR(100) NOT NULL, -- 상품명
     description TEXT, -- 상품 설명
     image_path VARCHAR(255), -- 상품(이미지) 경로
-    price DECIMAL(10, 2) NOT NULL, # 상품 가격
+    price DECIMAL(10, 2) NOT NULL, -- 상품 가격
     user_id INT, -- 판매자 ID (FK)
 				-- 구매자 ID 필요할까? xx
     status ENUM('available', 'sold', 'reserved') DEFAULT 'available',  -- 판매 상태
@@ -39,6 +39,16 @@ CREATE TABLE posts ( -- 게시판 테이블 추가
     content TEXT NOT NULL, -- 게시글 내용
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 작성 시간
     updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP, -- 수정 시간 (수정할 경우)
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE comments ( -- 댓글 테이블 추가
+    comment_id INT AUTO_INCREMENT PRIMARY KEY, -- 댓글 고유 ID
+    post_id INT, -- 게시글 ID (FK)
+    user_id INT, -- 작성자 ID (FK)
+    content TEXT NOT NULL, -- 댓글 내용
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 작성 시간
+    FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE, -- 게시글 삭제 시 관련 댓글도 삭제
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
