@@ -10,22 +10,22 @@ class db_connection:
 		# 클래스메서드는 인스턴스 생성 없이 호출 가능: db_connection.get_db()
     @classmethod
     def get_db(self):
-        return pymysql.connect(
-            host='localhost',
-            user='root',
-            password='rnrtmdqls98!',
-            db='mini1',
-            charset='utf8',
-            autocommit=True  # 테스트환경에서는 이렇게 사용
-        )
         # return pymysql.connect(
         #     host='localhost',
-        #     user='newuser',
-        #     password='qwer1234',
-        #     db='mini3',
+        #     user='root',
+        #     password='rnrtmdqls98!',
+        #     db='mini1',
         #     charset='utf8',
         #     autocommit=True  # 테스트환경에서는 이렇게 사용
         # )
+        return pymysql.connect(
+            host='localhost',
+            user='newuser',
+            password='qwer1234',
+            db='mini3',
+            charset='utf8',
+            autocommit=True  # 테스트환경에서는 이렇게 사용
+        )
 
 class UserDao:
     def __init__(self):
@@ -91,6 +91,15 @@ class PostDao:
         curs = conn.cursor()
         sql = "INSERT INTO posts (user_id, title, content, created_at) VALUES (%s, %s, %s, %s)"
         curs.execute(sql, (user_id, title, content, datetime.datetime.now()))
+        conn.commit()
+        conn.close()
+
+    # 게시글 수정
+    def update_post(self, post_id, new_title, new_content):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = "UPDATE posts SET title = %s, content = %s, updated_at = NOW() WHERE post_id = %s"
+        curs.execute(sql, (new_title, new_content, post_id))
         conn.commit()
         conn.close()
 
