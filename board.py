@@ -21,11 +21,14 @@ def newPost():
         title = request.form['title']
         content = request.form['content']
         user_id = session.get('user_id')
-
-        PostDao().insert_post(user_id, title, content)
-        flash('게시글이 성공적으로 작성되었습니다.')
-        return redirect(url_for('board.view'))
-
+        
+        if user_id:  # 사용자가 로그인된 경우
+            PostDao().insert_post(user_id, title, content)
+            flash('게시글이 성공적으로 작성되었습니다.')
+            return redirect(url_for('board.view'))
+        else:
+            flash('로그인 후에 게시글을 작성할 수 있습니다.')
+            return redirect(url_for('user.login'))
     return render_template('newPost.html')
 
 

@@ -50,6 +50,16 @@ class UserDao:
         user = curs.fetchone()
         conn.close()
         return user
+    
+    
+    
+    # 사용자 추가
+    def insert_user(self, user_name, id, password):
+        curs = db_connection.get_db().cursor()
+        sql = 'INSERT INTO users (user_name, id, password) VALUES (%s, %s, %s);'
+        insert_num = curs.execute(sql, (user_name, id, password))
+        db_connection.get_db().close()
+        return f'Insert OK: {insert_num}'
 
 
 class PostDao:
@@ -59,6 +69,8 @@ class PostDao:
     # 모든 게시글 조회
     def get_all_posts(self):
         conn = db_connection.get_db()
+        
+        
         curs = conn.cursor(pymysql.cursors.DictCursor)  # DictCursor 사용
         sql = "SELECT * FROM posts ORDER BY created_at DESC"
         curs.execute(sql)
