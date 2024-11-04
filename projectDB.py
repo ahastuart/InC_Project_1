@@ -121,6 +121,22 @@ class PostDao:
         conn.commit()
         conn.close()
 
+    # 제목으로 게시글 검색
+    def search_posts_by_title(self, title):
+        conn = db_connection.get_db()
+        curs = conn.cursor(pymysql.cursors.DictCursor)
+        sql = """
+            SELECT p.post_id, p.user_id, p.title, p.created_at, p.updated_at,
+                   (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.post_id) AS comment_count
+            FROM posts p
+            WHERE p.title LIKE %s
+            ORDER BY p.created_at DESC
+        """
+        curs.execute(sql, ('%' + title + '%',))
+        posts = curs.fetchall()
+        conn.close()
+        return posts
+
     # 댓글 조회
     def get_comments_by_post_id(self, post_id):
         conn = db_connection.get_db()
