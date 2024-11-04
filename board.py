@@ -3,11 +3,15 @@ from projectDB import *
 
 blueprint = Blueprint('board', __name__, url_prefix='/board' ,template_folder='templates')
 
-# 게시판 페이지(ID, 게시글, 작성 시간, 수정 시간)
-@blueprint.route('/view')
+# 게시판 페이지(ID, 게시글, 작성 시간, 수정 시간) + 검색 포함
+@blueprint.route('/view', methods=['GET', 'POST'])
 def view():
-    posts = PostDao().get_all_posts()  # 모든 게시글 조회
-    return render_template('board.html', posts=posts)
+    search_query = request.form.get('search', '').strip() if request.method == 'POST' else ''  # POST 요청에서만 검색어 가져오기
+    if search_query:  # 검색어가 있으면 해당 제목의 글만 조회
+        posts = PostDao().search_posts_by_title(search_query)
+    else:
+        posts = PostDao().get_all_posts()  # 검색어가 없으면 전체 글 조회
+    return render_template('board.html', posts=posts, search_query=search_query)
 
 # 게시글 추가 페이지
 @blueprint.route('/newPost', methods=['GET', 'POST'])
