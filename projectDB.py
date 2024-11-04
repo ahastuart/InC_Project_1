@@ -44,19 +44,12 @@ class UserDao:
     # 사용자 정보 ID로 조회 (마이페이지에서 사용)
     def get_user_by_id(self, user_id):
         conn = db_connection.get_db()
-        curs = conn.cursor()
+        curs = conn.cursor(pymysql.cursors.DictCursor)  # DictCursor 사용
         sql = "SELECT * FROM users WHERE user_id = %s"
         curs.execute(sql, (user_id,))
         user = curs.fetchone()
         conn.close()
         return user
-    
-    def get_current_user():
-        user_id = session.get('user_id')  # 세션에서 사용자 ID를 가져옴
-        if user_id:
-            return UserDao().get_user_by_id(user_id)  # 사용자 ID로 사용자 정보를 조회
-        return None
-
 
 
 class PostDao:
@@ -66,7 +59,9 @@ class PostDao:
     # 모든 게시글 조회
     def get_all_posts(self):
         conn = db_connection.get_db()
-        curs = conn.cursor(pymysql.cursors.DictCursor)
+        
+        
+        curs = conn.cursor(pymysql.cursors.DictCursor)  # DictCursor 사용
         sql = "SELECT * FROM posts ORDER BY created_at DESC"
         curs.execute(sql)
         posts = curs.fetchall()
@@ -76,14 +71,14 @@ class PostDao:
     # 게시글 ID로 조회
     def get_post_by_id(self, post_id):
         conn = db_connection.get_db()
-        curs = conn.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT * FROM posts WHERE post_id = %s"
+        curs = conn.cursor(pymysql.cursors.DictCursor)  # DictCursor 사용
+        sql = "SELECT post_id, user_id, title, content, created_at FROM posts WHERE post_id = %s"
         curs.execute(sql, (post_id,))
         post = curs.fetchone()
         conn.close()
         return post
 
-    # 게시글 삽입
+    # 게시글 추가
     def insert_post(self, user_id, title, content):
         conn = db_connection.get_db()
         curs = conn.cursor()
@@ -92,7 +87,7 @@ class PostDao:
         conn.commit()
         conn.close()
 
-# 상품 관련 DAO
+# 상품 관련 DB
 class productDAO:
     def __init__(self):
         pass

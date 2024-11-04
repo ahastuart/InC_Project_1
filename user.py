@@ -37,10 +37,50 @@ def logout():
 # 회원가입
 @blueprint.route('/signup', methods=['GET', 'POST'])
 def signup():
-    if request.method == 'GET':
-        return render_template('signup.html')  # 이메일 중복 처리 등 추가적 처리 필요함. 회원가입 완료 뒤에는 로그인 화면으로 리디렉션 되야함
-    else:
-        return redirect(url_for('main'))
+    if request.method == 'POST':
+        user_name = request.form['UserName']
+        id = request.form['UserId']
+        password = request.form['UserPw']
+        confirm_password = request.form['UserPwConfirm']
+
+        if password != confirm_password:
+            flash('비밀번호가 일치하지 않습니다.')
+            return redirect(url_for('user.signup'))
+
+        user_dao = UserDao()
+        existing_user = user_dao.get_user_by_id(id)
+        if existing_user:
+            flash('이미 사용 중입니다. 다른 값을 넣어주세요.')
+            return redirect(url_for('user.signup'))
+
+        result = user_dao.insert_user(user_name, id, password)
+        
+        if 'Insert OK' in result:
+            flash('회원가입이 완료되었습니다.')
+            return redirect(url_for('user.login'))
+        else:
+            flash('FATAL ERROR !')
+            return redirect(url_for('user.main'))
+
+    return render_template('signup.html')
+
+# id 중복 확인
+@blueprint.route('/check_duplicate', methods=['POST'])
+def check_duplicate():
+    data = request.get_json()
+    id = data.get('UserId')
+    
+    user_dao = UserDao()
+    existing_user = user_dao.get_user_by_id(id)
+    is_duplicate = existing_user is not None
+    
+    return jsonify({'isDuplicate': is_duplicate})
+
+# 회원가입 세부 기능
+@blueprint.route('/register')
+def register():
+    pass
+
 
 # 회원가입 세부 기능
 @blueprint.route('/register')
@@ -57,10 +97,10 @@ def myPage():
         user = UserDao().get_user_by_id(user_id)
         if user:
             user_data = {
-                'name': user[1],
-                'email': user[2],
-                'signup_date': user[4],
-                'credit': user[5]
+                'name': user['user_name'],
+                'email': user['id'],
+                'signup_date': user['signup_date'],
+                'credit': user['credit']
             }
         return render_template('myPage.html', user_data=user_data)
     else:
