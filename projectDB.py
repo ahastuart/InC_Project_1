@@ -50,6 +50,13 @@ class UserDao:
         user = curs.fetchone()
         conn.close()
         return user
+    
+    def insert_user(self, user_name, id, password):
+        curs = db_connection.get_db().cursor()
+        sql = 'INSERT INTO users (user_name, id, password) VALUES (%s, %s, %s);'
+        insert_num = curs.execute(sql, (user_name, id, password))
+        db_connection.get_db().close()
+        return f'Insert OK: {insert_num}'
 
 
 class PostDao:

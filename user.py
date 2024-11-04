@@ -76,16 +76,16 @@ def check_duplicate():
     
     return jsonify({'isDuplicate': is_duplicate})
 
-# 회원가입 세부 기능
-@blueprint.route('/register')
-def register():
-    pass
+# # 회원가입 세부 기능
+# @blueprint.route('/register')
+# def register():
+#     pass
 
 
-# 회원가입 세부 기능
-@blueprint.route('/register')
-def register():
-    pass
+# # 회원가입 세부 기능
+# @blueprint.route('/register')
+# def register():
+#     pass
 
 
 # 마이페이지(이름, ID, 구매 내역, 판매 내역 크레딧 조회 가능하도록)
