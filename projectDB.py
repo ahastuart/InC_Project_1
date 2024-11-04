@@ -1,3 +1,4 @@
+from flask import *
 import pymysql
 import datetime
 
@@ -31,6 +32,14 @@ class UserDao:
     def __init__(self):
         pass
     
+    def add_credit(self, user_id, amount):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = "UPDATE users SET credit = credit + %s WHERE user_id = %s"
+        curs.execute(sql, (amount, user_id))  # 수정된 부분
+        conn.commit()  # 변경 사항을 데이터베이스에 반영
+        curs.close()
+    
     # 사용자 조회
     def get_user(self, id, password):
         conn = db_connection.get_db()
@@ -57,6 +66,12 @@ class UserDao:
         insert_num = curs.execute(sql, (user_name, id, password))
         db_connection.get_db().close()
         return f'Insert OK: {insert_num}'
+
+    def get_current_user(self):
+        user_id = session.get('user_id')  # 세션에서 사용자 ID를 가져옴
+        if user_id:
+            return UserDao().get_user_by_id(user_id)  # 사용자 ID로 사용자 정보를 조회
+        return None
 
 
 class PostDao:
@@ -142,14 +157,53 @@ class productDAO:
     def __init__(self):
         pass
     
+    def get_sold_products(self, user_id):
+        conn = db_connection.get_db()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        
+        # 판매자가 user_id인 모든 상품과 판매 상태 조회
+        query = '''
+            SELECT p.product_name AS product_name, p.price AS price, 
+                IF(o.order_id IS NULL, '판매 중', '판매 완료') AS status, 
+                o.order_date AS sold_date, o.user_id AS buyer_id
+            FROM products p
+            LEFT JOIN orders o ON p.product_id = o.product_id
+            WHERE p.user_id = %s
+            ORDER BY p.product_id DESC
+        '''
+        cursor.execute(query, (user_id,))
+        selling_products = cursor.fetchall()
+        cursor.close()
+        
+        return selling_products
+    
+    def get_all_products(self):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = "SELECT * FROM products"  # 상품 정보를 가져오는 SQL
+        curs.execute(sql)
+        rows = curs.fetchall()
+        columns = [column[0] for column in curs.description]  # 컬럼 이름을 가져오기
+        products = [dict(zip(columns, row)) for row in rows]  # 딕셔너리로 변환
+        conn.close()
+        return products
+
+    
     # Productid 조회
     def get_product_by_id(self, product_id):
         conn = db_connection.get_db()
-        curs = conn.cursor(dictionary=True)  # 딕셔너리 형태로 결과를 반환
+        # DictCursor를 사용하여 딕셔너리 형태로 결과를 반환
+        curs = conn.cursor(pymysql.cursors.DictCursor)  
         sql = 'SELECT * FROM products WHERE product_id = %s'
         curs.execute(sql, (product_id,))
         product = curs.fetchone()  # 단일 상품이므로 fetchone 사용
         curs.close()
+        
+        if product is None:
+            print("No product found for ID:", product_id)
+        else:
+            print("Product found:", product)  # Debugging output
+            
         return product
     
     # product_id  - 구매페이지
@@ -239,18 +293,73 @@ class productDAO:
         curs.close()
         
     # 상품 생성 시 크레딧 500 감소하도록 처리
-    def generate_image(self,user_id):
+    def generate_image(self, user_id):
         conn = db_connection.get_db()
         curs = conn.cursor()
-        # 추가될 때 크레딧 감소시켜야 함
+        
+        # 크레딧이 충분한지 확인하고 감소시키는 쿼리
         update_sql = '''
         UPDATE users
         SET credit = credit - 500
         WHERE user_id = %s AND credit >= 500
         '''
-        curs.execute(update_sql,(user_id,))
+        curs.execute(update_sql, (user_id,))
+        conn.commit()  # 변경 사항 적용
+        
+        # 변경 사항이 적용되었는지 확인
+        if curs.rowcount == 0:
+            # 크레딧 부족으로 인해 업데이트되지 않음
+            curs.close()
+            return False
+        
         curs.close()
+        return True
+    # def generate_image(self,user_id):
+    #     conn = db_connection.get_db()
+    #     curs = conn.cursor()
+    #     # 추가될 때 크레딧 감소시켜야 함
+    #     update_sql = '''
+    #     UPDATE users
+    #     SET credit = credit - 500
+    #     WHERE user_id = %s AND credit >= 500
+    #     '''
+    #     curs.execute(update_sql,(user_id,))
+    #     curs.close()
     
+class orderDAO:
+    def __init__(self):
+        pass
+    
+    def createOrder(self,product_id, user_id, order_price):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        
+        sql = '''
+        INSERT INTO orders (product_id, user_id, order_price)
+                VALUES (%s, %s, %s)
+        '''
+        curs.execute(sql, (product_id, user_id, order_price,))
+        curs.close()
+        
+    def get_orders_by_user(self, user_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        
+        query = '''
+        SELECT products.product_name, orders.order_date, orders.order_price, products.status
+        FROM orders
+        JOIN products ON orders.product_id = products.product_id
+        WHERE products.user_id = %s
+        '''
+        curs.execute(query, (user_id,))
+        result = curs.fetchall()
+        
+        curs.close()
+        return result
+    
+    # 판매자가 등록한 상품의 판매 내역 조회
+    
+
 # 클래스 수정해서 사용
         
 if __name__ == '__main__':

@@ -109,15 +109,54 @@ def myPage():
 # 구매 내역 페이지(실제 상품 연동 필요)
 @blueprint.route('/buyList')
 def buyList():
-    return render_template('buyList.html')
+    user_id = session.get('user_id')  # 로그인된 유저 ID
+    if not user_id:
+        flash('로그인이 필요합니다.')
+        return redirect(url_for('user.login'))
+    
+    # 유저가 판매한 상품의 리스트 가져오기
+    orders = orderDAO().get_orders_by_user(user_id)
+    
+    return render_template('buyList.html', orders=orders)
 
 # 판매 내역 페이지(실제 상품 연동 필요)
 @blueprint.route('/sellList')
 def sellList():
-    return render_template('sellList.html')
+    user_id = session.get('user_id')
+    if not user_id:
+        flash("로그인이 필요합니다.")
+        return redirect(url_for('user.login'))
+    
+    # 판매자가 등록한 상품의 판매 내역 가져오기
+    sold_products = productDAO().get_sold_products(user_id)
+    
+    return render_template('sellList.html', sold_products=sold_products)
 
-# 크레딧 충전 페이지
-# 크레딧 충전 완료되면 home으로 리디렉션 되도록 수정필요
-@blueprint.route('/addCredit')
+@blueprint.route('/addCredit', methods=['GET', 'POST'])
 def addCredit():
+    if request.method == 'POST':
+        user_id = session.get('user_id')
+        if not user_id:
+            flash("로그인이 필요합니다.")
+            return redirect(url_for('user.login'))
+
+        # 금액 받기
+        amount = request.form.get('amount', type=int)  # amount를 그대로 가져옵니다.
+        print('amount  >>>>>>>>>>', amount)
+
+        if amount is not None and amount >= 1000:
+            print(f"User ID: {user_id}, Amount: {amount}")
+            user_dao = UserDao()
+            success = user_dao.add_credit(user_id, amount)  # 크레딧 추가 메서드 호출
+
+            if success:
+                flash(f"₩{amount:,}이 충전되었습니다.")  # 수정된 통화 포맷
+                return redirect(url_for('main.main'))  # 홈 페이지로 리디렉션
+            else:
+                flash("충전 중 오류가 발생했습니다.")
+        else:
+            flash("충전할 금액을 올바르게 입력해주세요.")
+
+        return redirect(url_for('user.myPage'))  # 충전 페이지로 리다이렉트
+
     return render_template('addCredit.html')
