@@ -82,6 +82,12 @@ def register():
     pass
 
 
+# 회원가입 세부 기능
+@blueprint.route('/register')
+def register():
+    pass
+
+
 # 마이페이지(이름, ID, 구매 내역, 판매 내역 크레딧 조회 가능하도록)
 @blueprint.route('/myPage')
 def myPage():
@@ -91,10 +97,10 @@ def myPage():
         user = UserDao().get_user_by_id(user_id)
         if user:
             user_data = {
-                'name': user[1],
-                'email': user[2],
-                'signup_date': user[4],
-                'credit': user[5]
+                'name': user['user_name'],
+                'email': user['id'],
+                'signup_date': user['signup_date'],
+                'credit': user['credit']
             }
         return render_template('myPage.html', user_data=user_data)
     else:
