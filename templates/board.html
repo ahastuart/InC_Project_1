@@ -121,6 +121,7 @@
                     <th scope="col">제목</th>
                     <th scope="col">작성 날짜</th>
                     <th scope="col">수정 날짜</th>
+                    <th scope="col">댓글 수</th> 
                 </tr>
             </thead>
             <tbody>
@@ -132,6 +133,7 @@
                     </td>
                     <td>{{ post['created_at'] }}</td> <!-- 작성 날짜 -->
                     <td>{{ post['updated_at'] if post['updated_at'] else '' }}</td> <!-- 수정 날짜 (없으면 빈칸)-->
+                    <td>{{ post['comment_count'] }}</td> <!-- 댓글 수 표시 -->
                 </tr>
                 {% else %}
                 <tr>

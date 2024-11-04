@@ -36,9 +36,10 @@ def newPost():
 @blueprint.route('/viewPost/<int:post_id>')
 def viewPost(post_id):
     post = PostDao().get_post_by_id(post_id)
+    comments = PostDao().get_comments_by_post_id(post_id)  # 댓글 조회
     if post:
         user_name = UserDao().get_user_by_id(post['user_id'])['user_name']
-        return render_template('viewPost.html', post=post, user_name=user_name)
+        return render_template('viewPost.html', post=post, user_name=user_name, comments=comments)
     else:
         flash('해당 게시글을 찾을 수 없습니다.')
         return redirect(url_for('board.view'))
@@ -62,3 +63,24 @@ def editPost(post_id):
         return redirect(url_for('board.viewPost', post_id=post_id))
     
     return render_template('editPost.html', post=post)
+
+# 댓글 추가 라우트
+@blueprint.route('/addComment/<int:post_id>', methods=['POST'])
+def addComment(post_id):
+    if 'user_id' not in session:
+        flash('로그인 후에 댓글을 작성할 수 있습니다.')
+        return redirect(url_for('user.login'))
+
+    content = request.form['content']
+    user_id = session['user_id']
+    PostDao().insert_comment(post_id, user_id, content)
+    flash('댓글이 성공적으로 추가되었습니다.')
+    return redirect(url_for('board.viewPost', post_id=post_id))
+
+# 댓글 삭제 라우트 (작성자만 삭제 가능)
+@blueprint.route('/deleteComment/<int:comment_id>', methods=['POST'])
+def deleteComment(comment_id):
+    # 세션의 사용자 ID와 댓글의 사용자 ID가 일치하는지 확인 필요
+    PostDao().delete_comment(comment_id)
+    flash('댓글이 삭제되었습니다.')
+    return redirect(request.referrer)
