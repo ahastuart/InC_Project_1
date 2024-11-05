@@ -69,7 +69,7 @@ class UserDao:
         conn.close()
         return user
     
-    def insert_user(self, user_name, id, password):
+    def insert_user(self, user_name, id, password, answer):
         curs = db_connection.get_db().cursor()
         sql = 'INSERT INTO users (user_name, id, password, answer) VALUES (%s, %s, %s, %s);'
         insert_num = curs.execute(sql, (user_name, id, password, answer))
