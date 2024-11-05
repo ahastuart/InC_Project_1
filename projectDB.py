@@ -365,7 +365,7 @@ class orderDAO:
         SELECT products.product_name, orders.order_date, orders.order_price, products.status
         FROM orders
         JOIN products ON orders.product_id = products.product_id
-        WHERE products.user_id = %s
+        WHERE orders.user_id = %s  -- 구매자의 ID를 기준으로 조회
         '''
         curs.execute(query, (user_id,))
         result = curs.fetchall()
