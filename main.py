@@ -11,5 +11,12 @@ def index():
 # 메인 화면
 @blueprint.route('/main')
 def main():
+    # 전체 상품 리스트 가져오기
     products = productDAO().get_all_products()
-    return render_template('home.html', products = products)
+    
+    # 판매 중인 상품과 판매 완료된 상품으로 분리
+    selling_products = [product for product in products if product['status'] != 'sold']
+    sold_products = [product for product in products if product['status'] == 'sold']
+    
+    # 템플릿에 각각 전달
+    return render_template('home.html', selling_products=selling_products, sold_products=sold_products)
