@@ -8,50 +8,49 @@
 
 ### 메인 페이지
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3f9cb2f0-2b20-4cc0-8ddd-20d900d085e2/ab84eed8-d503-4bfe-b0e1-69e5b0d5361c/image.png)
+![mainpage](https://github.com/user-attachments/assets/e7909f39-f4fc-4e6f-97b7-95a35493fec2)
 
 ### 마이페이지
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3f9cb2f0-2b20-4cc0-8ddd-20d900d085e2/80c956b1-5bce-4750-a469-e27d7a97c1a8/image.png)
-
+![mypage](https://github.com/user-attachments/assets/57e9c45a-1221-4c14-bbb3-bfc84585acc8)
 ### 크레딧 충전
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3f9cb2f0-2b20-4cc0-8ddd-20d900d085e2/37c0626c-770f-4435-8434-249623ee5484/image.png)
+![addcredit](https://github.com/user-attachments/assets/9df5e422-638a-4e84-a9f5-4837d4f19b94)
 
 ### 판매 내역 조회
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3f9cb2f0-2b20-4cc0-8ddd-20d900d085e2/fb31ecce-9c94-459f-be12-3312320354ec/image.png)
+![selllist](https://github.com/user-attachments/assets/939f786e-fc87-4d42-802d-1b5c026bd343)
 
 ### 구매 내역 조회
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3f9cb2f0-2b20-4cc0-8ddd-20d900d085e2/bba2fd28-0a79-4b44-9c90-5a3c132d3787/image.png)
+![buylist](https://github.com/user-attachments/assets/f8e46a0b-3c7d-4715-95f1-ef6f3a4cc117)
 
 ### 이미지 생성
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3f9cb2f0-2b20-4cc0-8ddd-20d900d085e2/89219369-540e-419c-8894-ef7969c8cd33/image.png)
+![createimage](https://github.com/user-attachments/assets/d805c442-a61b-4ab5-903c-f42637507b90)
 
 ### 생성 결과 화면
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3f9cb2f0-2b20-4cc0-8ddd-20d900d085e2/ebe26ab7-dd84-4e93-a7ba-7c8be0883777/image.png)
+![createdimage](https://github.com/user-attachments/assets/f8661dd0-348c-4050-b42e-5deed01f8629)
 
 ### 상품 등록 화면
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3f9cb2f0-2b20-4cc0-8ddd-20d900d085e2/96fb99a2-2bb4-4a7f-ab7a-d084330b62f1/image.png)
+![addproduct](https://github.com/user-attachments/assets/b3f669b1-3490-4eee-9e49-86194aefdc67)
 
 ### 상품 구매 화면
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3f9cb2f0-2b20-4cc0-8ddd-20d900d085e2/ac3da460-3a3c-4531-ba20-7e7182fc14b3/image.png)
+![buydetail](https://github.com/user-attachments/assets/140ce6be-000c-4ff1-a241-2b8aa887007d)
 
 ### 게시판 페이지
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3f9cb2f0-2b20-4cc0-8ddd-20d900d085e2/727009e5-af7f-4a6b-b9b4-7c6b7a2f8c4c/image.png)
+![postpage](https://github.com/user-attachments/assets/c06c9aa5-a633-461e-a179-873f18a2124a)
 
 ### 글 작성
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3f9cb2f0-2b20-4cc0-8ddd-20d900d085e2/64548f27-ae70-491b-92fa-cdf7bbc9da2c/image.png)
+![createpost](https://github.com/user-attachments/assets/fd4f3c5f-df75-4e00-a63d-2b8bc6118087)
 
 ### 게시글 확인 & 댓글 확인
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/3f9cb2f0-2b20-4cc0-8ddd-20d900d085e2/feffc604-c4ed-425f-ba71-68650ebff48d/image.png)
+![comment](https://github.com/user-attachments/assets/a36dfaf8-3842-4a79-b7e7-efd091b42b25)
 
 ---
