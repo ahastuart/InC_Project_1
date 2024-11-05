@@ -95,11 +95,11 @@ def generateImageFromPrompt():
         image = Image.open(BytesIO(base64.b64decode(image_data)))
         
         # 이미지는 로컬에 저장됨. 
-        filename = f'{user_id}_image_{user_prompt[:10]}.png'
-        save_path = os.path.join('/static/generated_image', filename)
+        filename = f'{user_id}_image_{user_prompt[:5]}.png'
+        save_path = os.path.join(current_app.root_path, 'static', 'generated_image', filename)
         image.save(save_path)
         
-        image_url = url_for('/static', filename=f'generated_image/{filename}')
+        image_url = url_for('static', filename=f'generated_image/{filename}')
         return redirect(url_for('product.generatedImage', image_url=image_url))
 
     if request.method == 'GET':
