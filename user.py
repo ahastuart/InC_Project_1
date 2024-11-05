@@ -152,8 +152,8 @@ def addCredit():
             if success:
                 flash(f"₩{amount:,}이 충전되었습니다.")  # 수정된 통화 포맷
                 return redirect(url_for('main.main'))  # 홈 페이지로 리디렉션
-            else:
-                flash("충전 중 오류가 발생했습니다.")
+            # else:
+            #     flash("충전 중 오류가 발생했습니다.")
         else:
             flash("충전할 금액을 올바르게 입력해주세요.")
 
