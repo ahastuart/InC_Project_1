@@ -52,7 +52,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="{{ url_for('main.main') }}">
-            <img src="{{ url_for('static', filename='/image/logo.png') }}" alt="쇼핑몰 로고">
+            <img src="{{ url_for('static', filename='image/logo.png') }}" alt="쇼핑몰 로고">
         </a>        
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -96,19 +96,29 @@
         <h1 class="fancy-title">Create and Sell your Imagination</h1>
 
         <div class="row mt-4">
-            {% for product in products %}
+            <!-- 판매 중인 상품 -->
+            {% for product in selling_products %}
             <div class="col-md-4 mb-4">
                 <div class="card">
                     <img src="{{ product.image_path }}" class="card-img-top" alt="상품 이미지">
                     <div class="card-body">
                         <h5 class="card-title">{{ product.product_name }}</h5>
                         <p class="card-text">{{ product.description }}</p>
-                        
-                        {% if product.status == "sold" %}
-                            <button class="btn btn-secondary" disabled>판매 완료</button>
-                        {% else %}
-                            <a href="{{ url_for('product.buyProduct', product_id=product.product_id) }}" class="btn btn-primary">구매하기</a>
-                        {% endif %}
+                        <a href="{{ url_for('product.buyProduct', product_id=product.product_id) }}" class="btn btn-primary">구매하기</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            
+            <!-- 판매 완료된 상품 -->
+            {% for product in sold_products %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="{{ product.image_path }}" class="card-img-top" alt="상품 이미지">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.product_name }}</h5>
+                        <p class="card-text">{{ product.description }}</p>
+                        <button class="btn btn-secondary" disabled>판매 완료</button>
                     </div>
                 </div>
             </div>

@@ -69,10 +69,10 @@ def signup():
 @blueprint.route('/check_duplicate', methods=['POST'])
 def check_duplicate():
     data = request.get_json()
-    id = data.get('UserId')
+    id = data.get('userId')
     
     user_dao = UserDao()
-    existing_user = user_dao.get_user_by_id(id)
+    existing_user = user_dao.get_id_by_id(id)
     is_duplicate = existing_user is not None
     
     return jsonify({'isDuplicate': is_duplicate})

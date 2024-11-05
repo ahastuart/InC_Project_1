@@ -60,7 +60,16 @@ class UserDao:
         conn.close()
         return user
     
-    def insert_user(self, user_name, id, password, answer):
+    def get_id_by_id(self, id):
+        conn = db_connection.get_db()
+        curs = conn.cursor(pymysql.cursors.DictCursor)  # DictCursor 사용
+        sql = "SELECT * FROM users WHERE id = %s"  # id 필드로 변경
+        curs.execute(sql, (id,))  # user_id 대신 id로
+        user = curs.fetchone()
+        conn.close()
+        return user
+    
+    def insert_user(self, user_name, id, password):
         curs = db_connection.get_db().cursor()
         sql = 'INSERT INTO users (user_name, id, password, answer) VALUES (%s, %s, %s, %s);'
         insert_num = curs.execute(sql, (user_name, id, password, answer))

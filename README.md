@@ -8,7 +8,7 @@
 
 ### 메인 페이지
 
-![mainpage](https://github.com/user-attachments/assets/e7909f39-f4fc-4e6f-97b7-95a35493fec2)
+![main](https://github.com/user-attachments/assets/49f24118-322f-4386-a453-60fd8d00050e)
 
 ### 마이페이지
 
