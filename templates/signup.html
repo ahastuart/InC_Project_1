@@ -91,8 +91,8 @@
         <div class="header-line"></div>
     </div>
     
-    <form method="POST" action="{{ url_for('user.signup') }}"> 
-        <!-- <h3>약관동의</h3>
+    <form method="POST" action="{{ url_for('user.signup') }}" onsubmit="return validateForm()"> 
+        <h3>약관동의</h3>
         <hr>
         <div class="form-group">
             <div class="form-check">
@@ -122,7 +122,7 @@
                 </label>
             </div>
         </div>
-        <hr> -->
+        <hr>
 
         <h3>회원정보</h3>
         <p class="text-center">
@@ -160,7 +160,7 @@
             <input type="text" id="UserName" name="UserName" class="form-control" required>
         </div>
 
-        <!-- <div class="form-group">
+        <div class="form-group">
             <label for="UserPhone">휴대폰 번호
                 <img src="//sui.ssgcdn.com/ui/ssg/img/mem/ico_star.gif" alt="필수" class="required-icon"/>
             </label>
@@ -205,13 +205,13 @@
 
         <p class="text-center">마케팅 정보 수신 동의를 하시면 상품 및 이벤트 정보를 받으실 수 있습니다</p>
         <p class="text-center">- 선택 항목에 동의하지 않더라도 회원가입 및 기본 서비스를 이용하실 수 있습니다.</p>
-        <hr> -->
+        <hr>
 
         <button type="submit" class="btn btn-dark btn-lg">확인</button>
     </form>
 </div>
 
-<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-KyZXEAg3QhqLMpG8r+Knujsl5/4Ku7p2zZw3U98i7A0=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-KyZXEAg3QhqLMpG8r+Knujsl5/4Ku7p2zZw3U98i7A0=" crossorigin="anonymous"></script>
 <script>
     function showTerms(message) {
         alert(message);
@@ -219,7 +219,7 @@
     function sendVerificationCode() {
         alert('인증번호가 발송되었습니다.');
     }
-</script> -->
+</script>
 <script>
     function checkDuplicate() {
         const userId = document.getElementById('UserId').value.trim();
@@ -248,6 +248,19 @@
                 alert('사용 가능한 아이디입니다.');
             }
         })
+    }
+
+    // 필수 항목 체크 함수
+    function validateForm() {
+        const check1 = document.getElementById('UserCheck1').checked;
+        const check2 = document.getElementById('UserCheck2').checked;
+        const check3 = document.getElementById('UserCheck3').checked;
+
+        if (!check1 || !check2 || !check3) {
+            alert('모든 필수 약관에 동의해야 합니다.');
+            return false; // 폼 제출을 차단
+        }
+        return true; // 폼 제출 허용
     }
 </script>
 
