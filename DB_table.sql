@@ -52,6 +52,10 @@ CREATE TABLE comments ( -- 댓글 테이블 추가
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+-- 암호 찾기 질문
+-- ALTER TABLE `mini1`.`users` 
+-- ADD COLUMN `answer` VARCHAR(45) NOT NULL AFTER `credit`;
+
 
 -- 이미지 생성 기록을 저장하고, 사용자가 나중에 접근할 수 있도록 관리하려면 이미지 생성 테이블 필요?
 -- CREATE TABLE generated_images ( 

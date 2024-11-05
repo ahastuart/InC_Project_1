@@ -60,10 +60,10 @@ class UserDao:
         conn.close()
         return user
     
-    def insert_user(self, user_name, id, password):
+    def insert_user(self, user_name, id, password, answer):
         curs = db_connection.get_db().cursor()
-        sql = 'INSERT INTO users (user_name, id, password) VALUES (%s, %s, %s);'
-        insert_num = curs.execute(sql, (user_name, id, password))
+        sql = 'INSERT INTO users (user_name, id, password, answer) VALUES (%s, %s, %s, %s);'
+        insert_num = curs.execute(sql, (user_name, id, password, answer))
         db_connection.get_db().close()
         return f'Insert OK: {insert_num}'
 
@@ -72,6 +72,25 @@ class UserDao:
         if user_id:
             return UserDao().get_user_by_id(user_id)  # 사용자 ID로 사용자 정보를 조회
         return None
+    
+    def change_pw(self, id, answer, new_password):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        # 주어진 id answer로 사용자가 존재하는지 확인
+        sql = "SELECT * FROM users WHERE id = %s AND answer = %s"
+        if curs.execute(sql, (id, answer,)):
+            # 비밀번호 업데이트
+            sql_update = "UPDATE users SET password = %s WHERE id = %s"
+            curs2 = conn.cursor()
+            curs2.execute(sql_update, (new_password, id,))
+            conn.commit()
+            curs2.close()
+            return True  # 성공을 나타냄
+        else:
+            curs.close()
+            return False  # 실패를 나타냄
+        
+            
 
 
 class PostDao:
