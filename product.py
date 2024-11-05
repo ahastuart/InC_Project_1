@@ -59,7 +59,10 @@ def confirmPurchase(product_id):
         if product:
             order_dao = orderDAO()  # orderDAO 인스턴스 생성
             order_dao.createOrder(product_id=product_id, user_id=user['user_id'], order_price=product['price'])  # 주문 기록
-
+    else:
+        flash('크레딧이 부족합니다.')
+        return redirect(url_for('main.main'))
+    
     return redirect(url_for('user.myPage'))
 
 # 생성 페이지
@@ -117,9 +120,9 @@ def generateImageFromCategory():
             return redirect(url_for('product.createImage'))
         
         # # 크레딧 감소 시도
-        # if not productDAO().generate_image(user_id):
-        #     flash('크레딧이 부족하여 이미지를 생성할 수 없습니다.')
-        #     return redirect(url_for('product.createImage'))
+        if not productDAO().generate_image(user_id):
+            flash('크레딧이 부족하여 이미지를 생성할 수 없습니다.')
+            return redirect(url_for('product.createImage'))
         
         prompt = generate_dalle_category(category, topic)
         
