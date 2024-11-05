@@ -85,6 +85,7 @@
             <button type="submit">로그인</button>
         </form>
         <button class="signup-button" onclick="location.href='/user/signup'">회원가입</button>
+        <button onclick="location.href='/user/find_pw'"><center><font size=2>비밀번호 찾기</font></center></button>
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <script>
