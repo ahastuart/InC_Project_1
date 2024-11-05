@@ -1,8 +1,6 @@
 from openai import OpenAI
 import os
 
-openai = OpenAI(api_key="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")
-
 def generate_dalle_prompt(user_prompt):
     # GPT 모델을 사용하여 DALL-E용 프롬프트로 변환하는 로직
     return f"DALL-E prompt generated from: {user_prompt}"
