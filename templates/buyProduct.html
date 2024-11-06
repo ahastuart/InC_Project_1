@@ -115,6 +115,10 @@
             })
             .then(response => response.json())
             .then(data => {
+                if (data.message) {
+                    // 구매 완료 알림 표시
+                    alert(data.message);
+                }
                 if (data.download_url) {
                     // 파일 다운로드
                     const a = document.createElement('a');
