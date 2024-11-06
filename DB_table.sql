@@ -7,7 +7,7 @@ CREATE TABLE users (
     id VARCHAR(100) UNIQUE NOT NULL, -- 로그인 id (이메일)
     password VARCHAR(255) NOT NULL, -- 로그인 비밀번호
     signup_date DATETIME DEFAULT CURRENT_TIMESTAMP, -- 가입 일자
-    credit INT DEFAULT 0 -- 크레딧 보유량
+    credit INT DEFAULT 0, -- 크레딧 보유량
     answer VARCHAR(45) NOT NULL
 );
 
