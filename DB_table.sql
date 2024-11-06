@@ -52,6 +52,20 @@ CREATE TABLE comments ( -- 댓글 테이블 추가
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE messages ( --문의 메시지 테이블
+    message_id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    product_id INT NOT NULL,
+    message_content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    replied_content TEXT,
+    replied_at TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES users(user_id),
+    FOREIGN KEY (receiver_id) REFERENCES users(user_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
 -- 암호 찾기 질문
 -- ALTER TABLE `mini1`.`users` 
 -- ADD COLUMN `answer` VARCHAR(45) NOT NULL AFTER `credit`;
