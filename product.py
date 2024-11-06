@@ -40,37 +40,90 @@ def buyProduct(product_id):
         flash("상품을 찾을 수 없습니다.")
         product_logger.error(f'{product_id} 존재하지 않는 상품')
         return redirect(url_for('main.main'))
-    return render_template('buyProduct.html', product=product)
+    
+    # 판매자의 정보를 가져옴
+    user_dao = UserDao()
+    seller = user_dao.get_user_by_id(product['user_id'])  # 상품의 user_id를 통해 판매자 정보 조회
+    
+    if not seller:
+        flash("판매자를 찾을 수 없습니다.")
+        product_logger.error(f'{product_id} 판매자 정보 없음')
+        return redirect(url_for('main.main'))
+    
+    return render_template('buyProduct.html', product=product, seller=seller)
+
 
 # 구매 기능
 @blueprint.route('/buyProduct/<int:product_id>', methods=['POST'])
 def confirmPurchase(product_id):
-    user = UserDao().get_current_user()  # 로그인한 사용자 정보 가져오기
+    user = UserDao().get_current_user()
 
     if not user:
         flash("로그인이 필요합니다.")
         product_logger.warning('로그인 필요')
-        return redirect(url_for('user.login'))
+        return jsonify({'redirect_url': url_for('user.login')}), 401  # JSON 응답으로 리디렉션 URL 반환
 
     # 구매 로직 처리
-    result = productDAO().purchase_product(product_id, user['user_id'])  # user_id를 전달하여 구매 처리
-    # flash(result)  # 결과 메시지 플래시에 표시
-    
-    # 구매 성공 시 주문 정보를 기록
-    if "구매가 완료되었습니다." in result:  # 구매가 성공했을 경우
-        # 상품 정보를 가져와서 주문 생성
-        product = productDAO().get_product_by_id(product_id)  # 상품 정보 가져오기
+    result = productDAO().purchase_product(product_id, user['user_id'])
+
+    if "구매가 완료되었습니다." in result:
+        product = productDAO().get_product_by_id(product_id)
         if product:
-            order_dao = orderDAO()  # orderDAO 인스턴스 생성
-            order_dao.createOrder(product_id=product_id, user_id=user['user_id'], order_price=product['price'])  # 주문 기록
+            order_dao = orderDAO()
+            order_dao.createOrder(
+                product_id=product_id,
+                user_id=user['user_id'],
+                order_price=product['price']
+            )
             product_logger.info(f'{product_id} 상품 구매 완료')
+
+            # 다운로드 파일 경로 설정
+            file_path = product['image_path']
+            directory = os.path.dirname(file_path)
+            filename = os.path.basename(file_path)
+
+            # 다운로드 URL 반환
+            download_url = url_for('product.download_file', directory=directory, filename=filename)
+            return jsonify({
+                'message': '구매가 완료되었습니다.',
+                'download_url': download_url,
+                'redirect_url': url_for('user.myPage')
+            })
     else:
-        flash('크레딧이 부족합니다.')
-        product_logger.warning('크레딧 부족')
-        return redirect(url_for('main.main'))
+        return jsonify({'message': '크레딧이 부족합니다.', 'redirect_url': url_for('main.main')}), 400
+
+@blueprint.route('/download/<path:directory>/<path:filename>')
+def download_file(directory, filename):
+    return send_from_directory(directory=directory, path=filename, as_attachment=True)
+
+# @blueprint.route('/buyProduct/<int:product_id>', methods=['POST'])
+# def confirmPurchase(product_id):
+#     user = UserDao().get_current_user()  # 로그인한 사용자 정보 가져오기
+
+#     if not user:
+#         flash("로그인이 필요합니다.")
+#         product_logger.warning('로그인 필요')
+#         return redirect(url_for('user.login'))
+
+#     # 구매 로직 처리
+#     result = productDAO().purchase_product(product_id, user['user_id'])  # user_id를 전달하여 구매 처리
+#     # flash(result)  # 결과 메시지 플래시에 표시
     
-    flash('구매가 완료되었습니다.')
-    return redirect(url_for('user.myPage'))
+#     # 구매 성공 시 주문 정보를 기록
+#     if "구매가 완료되었습니다." in result:  # 구매가 성공했을 경우
+#         # 상품 정보를 가져와서 주문 생성
+#         product = productDAO().get_product_by_id(product_id)  # 상품 정보 가져오기
+#         if product:
+#             order_dao = orderDAO()  # orderDAO 인스턴스 생성
+#             order_dao.createOrder(product_id=product_id, user_id=user['user_id'], order_price=product['price'])  # 주문 기록
+#             product_logger.info(f'{product_id} 상품 구매 완료')
+#     else:
+#         flash('크레딧이 부족합니다.')
+#         product_logger.warning('크레딧 부족')
+#         return redirect(url_for('main.main'))
+    
+#     flash('구매가 완료되었습니다.')
+#     return redirect(url_for('user.myPage'))
 
 # 생성 페이지
 @blueprint.route('/createImage')
