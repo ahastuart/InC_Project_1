@@ -54,7 +54,7 @@ def signup():
             flash('이미 사용 중입니다. 다른 값을 넣어주세요.')
             return redirect(url_for('user.signup'))
 
-        result = user_dao.insert_user(user_name, id, password, pw_answer)
+        result = user_dao.insert_user(user_name, id, password, answer)
         
         if 'Insert OK' in result:
             flash('회원가입이 완료되었습니다.')
@@ -90,6 +90,7 @@ def find_pw():
             flash('비밀번호가 변경되었습니다.')
             return redirect(url_for('user.login'))  # 로그인 페이지로 리다이렉트
         else:
+            flash('질문에 대한 답을 다시 입력해주세요.', 'error')
             return redirect(url_for('user.find_pw'))  # 비밀번호 찾기 페이지로 리다이렉트
     
     # GET 요청일 경우 비밀번호 찾기 페이지 렌더링
