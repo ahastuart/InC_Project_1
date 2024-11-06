@@ -53,7 +53,7 @@ def signup():
             flash('이미 사용 중입니다. 다른 값을 넣어주세요.')
             return redirect(url_for('user.signup'))
 
-        result = user_dao.insert_user(user_name, id, password)
+        result = user_dao.insert_user(user_name, id, password, answer)
         
         if 'Insert OK' in result:
             flash('회원가입이 완료되었습니다.')
@@ -75,6 +75,26 @@ def check_duplicate():
     is_duplicate = existing_user is not None
     
     return jsonify({'isDuplicate': is_duplicate})
+
+# 비밀 번호 찾기
+@blueprint.route('/find_pw', methods=['POST','GET'])
+def find_pw():
+    if request.method == 'POST':
+        user_name = request.form['UserId']
+        answer = request.form['answer']
+        new_password = request.form['new_password']
+        result = UserDao().change_pw(user_name, answer, new_password)
+        print(result)
+        if result == True:
+            flash('비밀번호가 변경되었습니다.')
+            return redirect(url_for('user.login'))  # 로그인 페이지로 리다이렉트
+        else:
+            flash('질문에 대한 답을 다시 입력해주세요.', 'error')
+            return redirect(url_for('user.find_pw'))  # 비밀번호 찾기 페이지로 리다이렉트
+    
+    # GET 요청일 경우 비밀번호 찾기 페이지 렌더링
+    return render_template('find_pw.html')
+    
 
 # # 회원가입 세부 기능
 # @blueprint.route('/register')
