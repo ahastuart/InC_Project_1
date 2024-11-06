@@ -3,7 +3,6 @@ import os
 
 # API Key 삭제
 
-
 def generate_dalle_prompt(user_prompt):
     # GPT 모델을 사용하여 DALL-E용 프롬프트로 변환하는 로직
     return f"DALL-E prompt generated from: {user_prompt}"

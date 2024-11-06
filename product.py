@@ -6,6 +6,7 @@ from io import BytesIO
 import base64
 from projectDB import *
 from werkzeug.utils import secure_filename
+from logging_conf import *
 
 blueprint = Blueprint('product', __name__, url_prefix='/product' ,template_folder='templates')
 
@@ -27,6 +28,7 @@ def addProduct():
             # DB에 상품 추가
             productDAO().add_product(product_name, product_description, image_path, product_price, session['user_id'])
             # flash('상품이 등록되었습니다.')
+            product_logger.info(f'{product_name} 상품 등록')
             return redirect(url_for('main.main'))  # 등록 후 페이지 리다이렉션
         
     return render_template('addProduct.html')
@@ -36,6 +38,7 @@ def buyProduct(product_id):
     product = productDAO().get_product_by_id(product_id)
     if not product:
         flash("상품을 찾을 수 없습니다.")
+        product_logger.error(f'{product_id} 존재하지 않는 상품')
         return redirect(url_for('main.main'))
     return render_template('buyProduct.html', product=product)
 
@@ -46,6 +49,7 @@ def confirmPurchase(product_id):
 
     if not user:
         flash("로그인이 필요합니다.")
+        product_logger.warning('로그인 필요')
         return redirect(url_for('user.login'))
 
     # 구매 로직 처리
@@ -59,8 +63,10 @@ def confirmPurchase(product_id):
         if product:
             order_dao = orderDAO()  # orderDAO 인스턴스 생성
             order_dao.createOrder(product_id=product_id, user_id=user['user_id'], order_price=product['price'])  # 주문 기록
+            product_logger.info(f'{product_id} 상품 구매 완료')
     else:
         flash('크레딧이 부족합니다.')
+        product_logger.warning('크레딧 부족')
         return redirect(url_for('main.main'))
     
     flash('구매가 완료되었습니다.')
@@ -83,11 +89,13 @@ def generateImageFromPrompt():
         
         if not user_prompt:
             flash('프롬프트를 입력해주세요')
+            product_logger.warning('프롬프트 입력 오류')
             return redirect(url_for('product.createImage'))
         
         # 크레딧 감소 시도
         if not productDAO().generate_image(user_id):
             flash('크레딧이 부족하여 이미지를 생성할 수 없습니다.')
+            product_logger.warning('크레딧 부족')
             return redirect(url_for('product.createImage'))
 
         dalle_propt = generate_dalle_prompt(user_prompt)
@@ -101,6 +109,7 @@ def generateImageFromPrompt():
         image.save(save_path)
         
         image_url = url_for('static', filename=f'generated_image/{filename}')
+        product_logger.info(f'{filename} 이미지 생성 완료')
         return redirect(url_for('product.generatedImage', image_url=image_url))
 
     if request.method == 'GET':
@@ -118,11 +127,13 @@ def generateImageFromCategory():
         
         if not category or not topic:
             flash('프롬프트를 입력해주세요')
+            product_logger.warning('프롬프트 입력 오류')
             return redirect(url_for('product.createImage'))
         
         # # 크레딧 감소 시도
         if not productDAO().generate_image(user_id):
             flash('크레딧이 부족하여 이미지를 생성할 수 없습니다.')
+            product_logger.warning('크레딧 부족')
             return redirect(url_for('product.createImage'))
         
         prompt = generate_dalle_category(category, topic)
@@ -135,6 +146,7 @@ def generateImageFromCategory():
         image.save(save_path)
         
         image_url = url_for('static', filename=f'generated_image/{filename}')
+        product_logger.info(f'{filename} 이미지 생성')
         return redirect(url_for('product.generatedImage', image_url=image_url))
     
     if request.method == 'GET':
@@ -153,6 +165,7 @@ def inquire(product_id):
         user_id = session.get('user_id')
         if not user_id:
             flash("로그인이 필요합니다.")
+            product_logger.warning('로그인 필요')
             return redirect(url_for('user.login'))
 
         message_content = request.form['message_content']
@@ -162,6 +175,7 @@ def inquire(product_id):
             receiver_id = product['user_id']
             MessagesDao().send_message(sender_id=user_id, receiver_id=receiver_id, product_id=product_id, message_content=message_content)
             flash("판매자에게 문의 메시지가 전송되었습니다.")
+            product_logger.info(f'userId : {user_id} receiver_Id : {receiver_id} product_Id : {product_id} 문의 전송')
             return redirect(url_for('user.inquiry_history'))
                         
             # return """
@@ -172,6 +186,7 @@ def inquire(product_id):
             # """.format(url_for('user.inquiry_history'))
         else:
             flash("상품을 찾을 수 없습니다.")
+            product_logger.error('상품이 존재하지 않습니다.')
             return redirect(url_for('main.main'))
     
     return render_template('inquire.html', product_id=product_id)
