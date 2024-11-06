@@ -97,6 +97,11 @@
                 <form method="POST" action="{{ url_for('product.confirmPurchase', product_id=product.product_id) }}">
                     <button type="submit" class="btn btn-submit btn-block">구매하기</button>
                 </form>
+
+                <!-- 판매자에게 문의하기 버튼 -->
+                <form method="GET" action="{{ url_for('product.inquire', product_id=product.product_id) }}">
+                    <button type="submit" class="btn btn-secondary btn-block mt-2">판매자에게 문의하기</button>
+                </form>
             </div>
         </div>
     </div>

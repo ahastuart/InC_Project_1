@@ -42,7 +42,6 @@ def signup():
         id = request.form['UserId']
         password = request.form['UserPw']
         confirm_password = request.form['UserPwConfirm']
-        pw_answer = request.form['FindPwAnswer']
 
         if password != confirm_password:
             flash('비밀번호가 일치하지 않습니다.')
@@ -181,3 +180,37 @@ def addCredit():
         return redirect(url_for('user.myPage'))  # 충전 페이지로 리다이렉트
 
     return render_template('addCredit.html')
+
+@blueprint.route('/inquiry_history')
+def inquiry_history():
+    user_id = session.get('user_id')
+    if not user_id:
+        flash("로그인이 필요합니다.")
+        return redirect(url_for('user.login'))
+    
+    inquiries = MessagesDao().get_inquiries_by_user(user_id)
+    return render_template('inquiry_history.html', inquiries=inquiries)
+
+@blueprint.route('/inquiry_detail/<int:message_id>', methods=['GET', 'POST'])
+def inquiry_detail(message_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        flash("로그인이 필요합니다.")
+        return redirect(url_for('user.login'))
+    
+    if request.method == 'POST':
+        reply_content = request.form['reply_content']
+        MessagesDao().send_reply(message_id, user_id, reply_content)
+        # flash("답장이 전송되었습니다.")
+        # return redirect(url_for('user.inquiry_history'))
+                
+        return """
+        <script>
+            alert("답장이 완료되었습니다.");
+            window.location.href = "{}";
+        </script>
+        """.format(url_for('user.inquiry_history'))
+    
+    messages = MessagesDao().get_conversation(message_id, user_id)
+    return render_template('inquiry_detail.html', messages=messages)
+

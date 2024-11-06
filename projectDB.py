@@ -23,7 +23,7 @@ class db_connection:
         #     host='localhost',
         #     user='newuser',
         #     password='qwer1234',
-        #     db='mini3',
+        #     db='mini4',
         #     charset='utf8',
         #     autocommit=True  # 테스트환경에서는 이렇게 사용
         # )
@@ -401,7 +401,92 @@ class orderDAO:
         curs.close()
         return result
     
-    # 판매자가 등록한 상품의 판매 내역 조회
+class MessagesDao:
+    def __init__(self):
+        pass
+
+    # 메시지 전송
+    def send_message(self, sender_id, receiver_id, product_id, message_content):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = """
+            INSERT INTO messages (sender_id, receiver_id, product_id, message_content)
+            VALUES (%s, %s, %s, %s)
+        """
+        curs.execute(sql, (sender_id, receiver_id, product_id, message_content))
+        conn.commit()
+        curs.close()
+        conn.close()
+
+    # 특정 사용자의 메시지 조회 (발신 및 수신 메시지)
+    def get_messages_by_user(self, user_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor(pymysql.cursors.DictCursor)
+        sql = """
+            SELECT m.message_content, m.created_at, u.user_name AS sender_name, p.product_name
+            FROM messages m
+            JOIN users u ON m.sender_id = u.user_id
+            JOIN products p ON m.product_id = p.product_id
+            WHERE m.receiver_id = %s OR m.sender_id = %s
+            ORDER BY m.created_at DESC
+        """
+        curs.execute(sql, (user_id, user_id))
+        messages = curs.fetchall()
+        curs.close()
+        conn.close()
+        return messages
+    
+    # 사용자 관련 모든 문의 목록을 가져옴 (보낸 메시지와 받은 메시지)
+    def get_inquiries_by_user(self, user_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor(pymysql.cursors.DictCursor)
+        sql = """
+            SELECT m.message_id, m.sender_id, m.receiver_id, m.product_id,
+                   p.product_name, u.user_name AS other_user_name, m.message_content, m.created_at,
+                   IF(m.sender_id = %s, 'sent', 'received') AS direction
+            FROM messages m
+            JOIN products p ON m.product_id = p.product_id
+            JOIN users u ON (CASE WHEN m.sender_id = %s THEN m.receiver_id ELSE m.sender_id END) = u.user_id
+            WHERE m.sender_id = %s OR m.receiver_id = %s
+            ORDER BY m.created_at DESC
+        """
+        curs.execute(sql, (user_id, user_id, user_id, user_id))
+        inquiries = curs.fetchall()
+        curs.close()
+        conn.close()
+        return inquiries
+    
+    # 대화 내용 조회
+    def get_conversation(self, message_id, user_id):
+        conn = db_connection.get_db()
+        curs = conn.cursor(pymysql.cursors.DictCursor)
+        sql = """
+            SELECT m.message_content, m.replied_content, m.created_at, m.replied_at,
+                   u.user_name AS sender_name
+            FROM messages m
+            JOIN users u ON m.sender_id = u.user_id
+            WHERE m.message_id = %s AND (m.sender_id = %s OR m.receiver_id = %s)
+            ORDER BY m.created_at ASC
+        """
+        curs.execute(sql, (message_id, user_id, user_id))
+        conversation = curs.fetchall()
+        curs.close()
+        conn.close()
+        return conversation
+
+    # 답장 전송 메서드
+    def send_reply(self, message_id, user_id, reply_content):
+        conn = db_connection.get_db()
+        curs = conn.cursor()
+        sql = """
+            INSERT INTO messages (sender_id, receiver_id, product_id, message_content, created_at)
+            SELECT %s, CASE WHEN sender_id = %s THEN receiver_id ELSE sender_id END, product_id, %s, NOW()
+            FROM messages WHERE message_id = %s
+        """
+        curs.execute(sql, (user_id, user_id, reply_content, message_id))
+        conn.commit()
+        curs.close()
+        conn.close()
     
 
 # 클래스 수정해서 사용
