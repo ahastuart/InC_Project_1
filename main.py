@@ -1,5 +1,6 @@
 from flask import *
 from projectDB import *
+from logging_conf import *
 
 blueprint = Blueprint('main', __name__, template_folder='templates')
 
@@ -18,5 +19,6 @@ def main():
     selling_products = [product for product in products if product['status'] != 'sold']
     sold_products = [product for product in products if product['status'] == 'sold']
     
+    main_logger.info('mainpage 방문')
     # 템플릿에 각각 전달
     return render_template('home.html', selling_products=selling_products, sold_products=sold_products)

@@ -1,8 +1,10 @@
-
+from logging_conf import *
 from flask import * 
 from projectDB import *
 
 blueprint = Blueprint('user', __name__, url_prefix='/user' ,template_folder='templates')
+# logging.config.fileConfig('logging.conf')
+# logger = logging.getLogger(__name__)
 
 # 로그인 기능
 @blueprint.route('/login', methods=['GET', 'POST'])
@@ -10,7 +12,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-
+        user_logger.info(f'로그인 시도 : {username}')
         # 사용자 정보 조회
         user = UserDao().get_user(username, password)
 
@@ -18,9 +20,11 @@ def login():
             session['login_info'] = user[1]  # 로그인 정보 세션에 저장
             session['user_id'] = user[0]  # 사용자 고유 ID 저장
             flash('로그인 성공!')  # 로그인 성공 메시지
+            user_logger.info(f'로그인 성공 : {username}')
             return redirect(url_for('main.main'))  # => 리디렉션 처리
         else:
             flash('로그인 실패. 사용자 이름 또는 비밀번호를 확인하세요.')  # 오류 메시지
+            user_logger.warning(f'로그인 실패 : {username}')
             return redirect(url_for('user.login'))  # 로그인 실패 시 로그인 페이지로 이동
         
     return render_template('login.html')
@@ -32,6 +36,7 @@ def logout():
         session.pop('login_info', None)
         session.pop('user_id', None)
         flash('로그아웃 되었습니다.')  # 로그아웃 메시지
+        user_logger.info('로그아웃 완료')
     return redirect(url_for('main.main'))
 
 # 회원가입
@@ -42,24 +47,29 @@ def signup():
         id = request.form['UserId']
         password = request.form['UserPw']
         confirm_password = request.form['UserPwConfirm']
+        answer = request.form['FindPwAnswer']
 
         if password != confirm_password:
             flash('비밀번호가 일치하지 않습니다.')
+            user_logger.warning('비밀번호 에러')
             return redirect(url_for('user.signup'))
 
         user_dao = UserDao()
         existing_user = user_dao.get_user_by_id(id)
         if existing_user:
             flash('이미 사용 중입니다. 다른 값을 넣어주세요.')
+            user_logger.warning(f'PW 중복 발생')
             return redirect(url_for('user.signup'))
 
         result = user_dao.insert_user(user_name, id, password, answer)
         
         if 'Insert OK' in result:
             flash('회원가입이 완료되었습니다.')
+            user_logger.info(f'{user_name} 회원가입 완료')
             return redirect(url_for('user.login'))
         else:
             flash('FATAL ERROR !')
+            user_logger.error('FATAL ERROR')
             return redirect(url_for('user.main'))
 
     return render_template('signup.html')
@@ -87,9 +97,11 @@ def find_pw():
         print(result)
         if result == True:
             flash('비밀번호가 변경되었습니다.')
+            user_logger.info(f'{user_name} 비밀번호 변경')
             return redirect(url_for('user.login'))  # 로그인 페이지로 리다이렉트
         else:
             flash('질문에 대한 답을 다시 입력해주세요.', 'error')
+            user_logger.warning(f'{user_name} Diffrent Answer')
             return redirect(url_for('user.find_pw'))  # 비밀번호 찾기 페이지로 리다이렉트
     
     # GET 요청일 경우 비밀번호 찾기 페이지 렌더링
@@ -132,6 +144,7 @@ def buyList():
     user_id = session.get('user_id')  # 로그인된 유저 ID
     if not user_id:
         flash('로그인이 필요합니다.')
+        user_logger.error('로그인 필요')
         return redirect(url_for('user.login'))
     
     # 유저가 판매한 상품의 리스트 가져오기
@@ -145,6 +158,7 @@ def sellList():
     user_id = session.get('user_id')
     if not user_id:
         flash("로그인이 필요합니다.")
+        user_logger.error('로그인 필요')
         return redirect(url_for('user.login'))
     
     # 판매자가 등록한 상품의 판매 내역 가져오기
@@ -158,6 +172,7 @@ def addCredit():
         user_id = session.get('user_id')
         if not user_id:
             flash("로그인이 필요합니다.")
+            user_logger.error('로그인 필요')
             return redirect(url_for('user.login'))
 
         # 금액 받기
@@ -165,7 +180,7 @@ def addCredit():
         print('amount  >>>>>>>>>>', amount)
 
         if amount is not None and amount >= 1000:
-            print(f"User ID: {user_id}, Amount: {amount}")
+            user_logger.info(f"User ID: {user_id}, Amount: {amount}")
             user_dao = UserDao()
             success = user_dao.add_credit(user_id, amount)  # 크레딧 추가 메서드 호출
 
@@ -176,9 +191,11 @@ def addCredit():
             #     flash("충전 중 오류가 발생했습니다.")
         else:
             flash("충전할 금액을 올바르게 입력해주세요.")
+            user_logger.error(f'{user_id} 충전 오류')
 
 
         flash("크레딧 충전이 완료되었습니다.")
+        user_logger.info(f'user_id : {user_id}, amount = {amount} 충전 완료')
         return redirect(url_for('user.myPage'))  # 충전 페이지로 리다이렉트
 
     return render_template('addCredit.html')
@@ -188,6 +205,7 @@ def inquiry_history():
     user_id = session.get('user_id')
     if not user_id:
         flash("로그인이 필요합니다.")
+        user_logger.error('로그인 필요')
         return redirect(url_for('user.login'))
     
     inquiries = MessagesDao().get_inquiries_by_user(user_id)
@@ -198,12 +216,14 @@ def inquiry_detail(message_id):
     user_id = session.get('user_id')
     if not user_id:
         flash("로그인이 필요합니다.")
+        user_logger.error('로그인 필요')
         return redirect(url_for('user.login'))
     
     if request.method == 'POST':
         reply_content = request.form['reply_content']
         MessagesDao().send_reply(message_id, user_id, reply_content)
         flash("답장이 전송되었습니다.")
+        user_logger.info(f'{user_id} {reply_content} 답장 전송 완료')
         return redirect(url_for('user.inquiry_history'))
                 
         # return """
