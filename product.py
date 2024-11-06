@@ -63,6 +63,7 @@ def confirmPurchase(product_id):
         flash('크레딧이 부족합니다.')
         return redirect(url_for('main.main'))
     
+    flash('구매가 완료되었습니다.')
     return redirect(url_for('user.myPage'))
 
 # 생성 페이지
@@ -160,15 +161,15 @@ def inquire(product_id):
         if product:
             receiver_id = product['user_id']
             MessagesDao().send_message(sender_id=user_id, receiver_id=receiver_id, product_id=product_id, message_content=message_content)
-            # flash("판매자에게 문의 메시지가 전송되었습니다.")
-            # return redirect(url_for('user.inquiry_history'))
+            flash("판매자에게 문의 메시지가 전송되었습니다.")
+            return redirect(url_for('user.inquiry_history'))
                         
-            return """
-            <script>
-                alert("판매자에게 문의 메시지가 전송되었습니다.");
-                window.location.href = "{}";
-            </script>
-            """.format(url_for('user.inquiry_history'))
+            # return """
+            # <script>
+            #     alert("판매자에게 문의 메시지가 전송되었습니다.");
+            #     window.location.href = "{}";
+            # </script>
+            # """.format(url_for('user.inquiry_history'))
         else:
             flash("상품을 찾을 수 없습니다.")
             return redirect(url_for('main.main'))

@@ -177,6 +177,8 @@ def addCredit():
         else:
             flash("충전할 금액을 올바르게 입력해주세요.")
 
+
+        flash("크레딧 충전이 완료되었습니다.")
         return redirect(url_for('user.myPage'))  # 충전 페이지로 리다이렉트
 
     return render_template('addCredit.html')
@@ -201,15 +203,15 @@ def inquiry_detail(message_id):
     if request.method == 'POST':
         reply_content = request.form['reply_content']
         MessagesDao().send_reply(message_id, user_id, reply_content)
-        # flash("답장이 전송되었습니다.")
-        # return redirect(url_for('user.inquiry_history'))
+        flash("답장이 전송되었습니다.")
+        return redirect(url_for('user.inquiry_history'))
                 
-        return """
-        <script>
-            alert("답장이 완료되었습니다.");
-            window.location.href = "{}";
-        </script>
-        """.format(url_for('user.inquiry_history'))
+        # return """
+        # <script>
+        #     alert("답장이 완료되었습니다.");
+        #     window.location.href = "{}";
+        # </script>
+        # """.format(url_for('user.inquiry_history'))
     
     messages = MessagesDao().get_conversation(message_id, user_id)
     return render_template('inquiry_detail.html', messages=messages)
