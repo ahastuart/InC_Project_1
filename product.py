@@ -145,3 +145,32 @@ def generateImageFromCategory():
 def generatedImage():
     image_url = request.args.get('image_url')
     return render_template('createdImage.html', image_url=image_url)
+
+@blueprint.route('/inquire/<int:product_id>', methods=['GET', 'POST'])
+def inquire(product_id):
+    if request.method == 'POST':
+        user_id = session.get('user_id')
+        if not user_id:
+            flash("로그인이 필요합니다.")
+            return redirect(url_for('user.login'))
+
+        message_content = request.form['message_content']
+        product = productDAO().get_product_by_id(product_id)
+
+        if product:
+            receiver_id = product['user_id']
+            MessagesDao().send_message(sender_id=user_id, receiver_id=receiver_id, product_id=product_id, message_content=message_content)
+            # flash("판매자에게 문의 메시지가 전송되었습니다.")
+            # return redirect(url_for('user.inquiry_history'))
+                        
+            return """
+            <script>
+                alert("판매자에게 문의 메시지가 전송되었습니다.");
+                window.location.href = "{}";
+            </script>
+            """.format(url_for('user.inquiry_history'))
+        else:
+            flash("상품을 찾을 수 없습니다.")
+            return redirect(url_for('main.main'))
+    
+    return render_template('inquire.html', product_id=product_id)
