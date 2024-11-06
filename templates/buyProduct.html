@@ -88,16 +88,16 @@
         
         <div class="card mb-4">
             <img src="{{ '/'+product.image_path }}" class="card-img-top" alt="상품 이미지">
-
+            
             <div class="card-body">
                 <h5 class="card-title">{{ product.product_name }}</h5>
                 <p class="card-text">{{ product.description }}</p>
                 <p class="card-text"><strong>가격:</strong> {{ product.price }} 크레딧</p>
-                
-                <form method="POST" action="{{ url_for('product.confirmPurchase', product_id=product.product_id) }}">
-                    <button type="submit" class="btn btn-submit btn-block">구매하기</button>
-                </form>
-
+                <p class="card-text"><strong>판매자:</strong> {{ seller.user_name }}</p>  <!-- 판매자 이름 표시 -->
+    
+                <!-- 구매하기 버튼 -->
+                <button id="purchase-button" class="btn btn-submit btn-block">구매하기</button>
+    
                 <!-- 판매자에게 문의하기 버튼 -->
                 <form method="GET" action="{{ url_for('product.inquire', product_id=product.product_id) }}">
                     <button type="submit" class="btn btn-secondary btn-block mt-2">판매자에게 문의하기</button>
@@ -106,7 +106,33 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        document.querySelector('#purchase-button').addEventListener('click', function () {
+            fetch('{{ url_for("product.confirmPurchase", product_id=product.product_id) }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.download_url) {
+                    // 파일 다운로드
+                    const a = document.createElement('a');
+                    a.href = data.download_url;
+                    a.download = '';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+                // 리디렉션 수행
+                if (data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
