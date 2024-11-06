@@ -255,8 +255,8 @@ class productDAO:
         conn = db_connection.get_db()
         curs = conn.cursor()
 
-        # 1. 해당 상품의 가격을 확인하고 유저의 크레딧 확인
-        product_sql = 'SELECT price FROM products WHERE product_id = %s'
+        # 1. 해당 상품의 가격 및 판매자 ID 확인
+        product_sql = 'SELECT price, user_id FROM products WHERE product_id = %s'
         curs.execute(product_sql, (product_id,))
         product = curs.fetchone()
         
@@ -264,7 +264,7 @@ class productDAO:
             curs.close()
             return "상품을 찾을 수 없습니다."
 
-        price = product[0]
+        price, seller_id = product
         
         # 2. 유저의 크레딧 확인
         user_sql = 'SELECT credit FROM users WHERE user_id = %s'
@@ -278,14 +278,19 @@ class productDAO:
         # 3. 유저의 크레딧 차감 및 상품 상태를 'sold'로 업데이트
         update_user_sql = 'UPDATE users SET credit = credit - %s WHERE user_id = %s'
         update_product_sql = 'UPDATE products SET status = %s WHERE product_id = %s'
-
+        
         curs.execute(update_user_sql, (price, user_id))
         curs.execute(update_product_sql, ('sold', product_id))
+
+        # 4. 판매자 크레딧 증가
+        update_seller_credit_sql = 'UPDATE users SET credit = credit + %s WHERE user_id = %s'
+        curs.execute(update_seller_credit_sql, (price, seller_id))
 
         conn.commit()  # 데이터베이스에 변경 사항 반영
         curs.close()
         
         return "구매가 완료되었습니다."
+
     
     # 상품 추가
     def add_product(self, product_name, description, image_path, price, user_id):
