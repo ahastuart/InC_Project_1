@@ -1,4 +1,4 @@
-# Title : Create and Sell your Imagination
+![screencapture-localhost-8000-user-inquiry-history-2024-11-06-17_11_35](https://github.com/user-attachments/assets/453c194c-2470-4e75-8951-a3b7e6a9bab8)# Title : Create and Sell your Imagination
 
 - 사용자가 생성한 이미지를 판매하거나 구매할 수 있도록 하는 웹 서비스
 - 이미지 생성을 위해 DALL-E 3 모델 사용, Flask와 Python을 이용해서 구현
@@ -8,7 +8,7 @@
 
 ### 메인 페이지
 
-![main](https://github.com/user-attachments/assets/49f24118-322f-4386-a453-60fd8d00050e)
+![screencapture-localhost-8000-main-2024-11-07-09_12_50](https://github.com/user-attachments/assets/0659f36e-0d4b-475f-b6dd-a2d6c3d0488d)
 
 ### 마이페이지
 
@@ -39,7 +39,7 @@
 
 ### 상품 구매 화면
 
-![buydetail](https://github.com/user-attachments/assets/140ce6be-000c-4ff1-a241-2b8aa887007d)
+![screencapture-localhost-8000-product-buyProduct-25-2024-11-07-09_22_30](https://github.com/user-attachments/assets/757a8ffb-ddc4-45bb-ac08-0666f79fe94a)
 
 ### 게시판 페이지
 
@@ -53,4 +53,12 @@
 
 ![comment](https://github.com/user-attachments/assets/a36dfaf8-3842-4a79-b7e7-efd091b42b25)
 
+### 문의하기(쪽지)
+
+![screencapture-localhost-8000-product-inquire-13-2024-11-06-17_11_21](https://github.com/user-attachments/assets/af9e0f29-b7ba-459f-8fc9-8949c5ff72fe)
+![screencapture-localhost-8000-user-inquiry-history-2024-11-06-17_11_35](https://github.com/user-attachments/assets/dc758361-1ea2-41ef-ba74-c223f44243e8)
+
+### 답장하기
+
+![screencapture-localhost-8000-user-inquiry-detail-1-2024-11-06-17_15_30](https://github.com/user-attachments/assets/df5b663c-7fed-4d8c-a254-09dd61374bff)
 ---
