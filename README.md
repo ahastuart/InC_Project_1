@@ -1,4 +1,4 @@
-![screencapture-localhost-8000-user-inquiry-history-2024-11-06-17_11_35](https://github.com/user-attachments/assets/453c194c-2470-4e75-8951-a3b7e6a9bab8)# Title : Create and Sell your Imagination
+# Title : Create and Sell your Imagination
 
 - 사용자가 생성한 이미지를 판매하거나 구매할 수 있도록 하는 웹 서비스
 - 이미지 생성을 위해 DALL-E 3 모델 사용, Flask와 Python을 이용해서 구현
