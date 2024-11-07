@@ -61,4 +61,5 @@
 ### 답장하기
 
 ![screencapture-localhost-8000-user-inquiry-detail-1-2024-11-06-17_15_30](https://github.com/user-attachments/assets/df5b663c-7fed-4d8c-a254-09dd61374bff)
+![screencapture-localhost-8000-user-inquiry-history-2024-11-06-17_15_46](https://github.com/user-attachments/assets/c9a4ea0f-b362-40f2-9cac-ac3dee139333)
 ---
