@@ -5,6 +5,8 @@
 - 게시판과 댓글, 쪽지 기능을 통해 사용자간의 소통이 가능하도록 구현
 - AJAX를 이용한 비동기 통신으로 구매한 이미지를 저장하고 리디렉션 가능하도록 구현
 ---
+![project1_systemArchitecture](https://github.com/user-attachments/assets/ce7bc2c0-e5c7-4d3c-a276-11455e4f0f0a)
+---
 
 ### 메인 페이지
 
