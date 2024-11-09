@@ -3,7 +3,7 @@
 - 사용자가 생성한 이미지를 판매하거나 구매할 수 있도록 하는 웹 서비스
 - 이미지 생성을 위해 DALL-E 3 모델 사용, Flask와 Python을 이용해서 구현
 - 게시판과 댓글, 쪽지 기능을 통해 사용자간의 소통이 가능하도록 구현
-- AJAX를 이용한 비동기 통신으로 구매한 이미지를 저장하고 리디렉션 가능하도록 구현
+- Ajax를 이용한 비동기 통신으로 구매한 이미지를 저장하고 리디렉션 가능하도록 구현
 ---
 ![project1_systemArchitecture](https://github.com/user-attachments/assets/ce7bc2c0-e5c7-4d3c-a276-11455e4f0f0a)
 ---
